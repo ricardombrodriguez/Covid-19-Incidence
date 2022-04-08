@@ -1,14 +1,132 @@
+<style>
+
+.hero__search {
+	overflow: hidden;
+	margin-bottom: 30px;
+}
+
+.hero__search__form {
+	width: 610px;
+	height: 50px;
+	border: 1px solid #ebebeb;
+	position: relative;
+	float: left;
+}
+
+.hero__search__form form .hero__search__categories {
+	width: 30%;
+	float: left;
+	font-size: 16px;
+	color: #1c1c1c;
+	font-weight: 700;
+	padding-left: 18px;
+	padding-top: 11px;
+	position: relative;
+}
+
+.hero__search__form form .hero__search__categories:after {
+	position: absolute;
+	right: 0;
+	top: 14px;
+	height: 20px;
+	width: 1px;
+	background: #000000;
+	opacity: 0.1;
+	content: "";
+}
+
+.hero__search__form form .hero__search__categories span {
+	position: absolute;
+	right: 14px;
+	top: 14px;
+}
+
+.hero__search__form form input {
+	width: 70%;
+	border: none;
+	height: 48px;
+	font-size: 16px;
+	color: #b2b2b2;
+	padding-left: 20px;
+}
+
+.hero__search__form form input::placeholder {
+	color: #b2b2b2;
+}
+
+.hero__search__form form button {
+	position: absolute;
+	right: 0;
+	top: -1px;
+	height: 50px;
+}
+
+.hero.hero-normal {
+	padding-bottom: 30px;
+}
+
+.hero.hero-normal .hero__categories {
+	position: relative;
+}
+
+.hero.hero-normal .hero__categories ul {
+	display: none;
+	position: absolute;
+	left: 0;
+	top: 46px;
+	width: 100%;
+	z-index: 9;
+	background: #ffffff;
+}
+
+.hero.hero-normal .hero__search {
+	margin-bottom: 0;
+}
+
+#inner {
+	width: 50%;
+	margin: 0 auto;
+}
+
+.site-btn {
+	font-size: 14px;
+	height: 60px;
+	width: 200px;
+	text-align: center;
+	color: #ffffff;
+	font-weight: 800;
+	text-transform: uppercase;
+	align-items: center;
+	background: #2054a3;
+	border: none;
+}
+
+#search {
+	margin-top: 50px;
+	margin-bottom: 50px;
+}
+
+</style>
+
 <div class="wrapper">
 
 	<div class="main">
-		<nav class="navbar navbar-expand navbar-light navbar-bg">
-			<h4>Covid-19</h4>
-		</nav>
 
 		<main class="content">
 			<div class="container-fluid p-0">
 
-				<h1 class="h3 mb-3"><strong>COVID-19</strong> Incidence</h1>
+				<h1 class="h3 mb-3" style="width: 100%; text-align: center;"><strong>COVID-19</strong> Incidence</h1>
+
+				<div class="container" id="search">
+					<div class="hero__search" id="inner">
+						<div class="hero__search__form">
+							<form method="GET">
+								<input type="text" placeholder="Search by location (e.g. Portugal, Paris)" name="location">
+								<button type="submit" class="site-btn" name="searchbtn">Search</button>
+							</form>
+						</div>
+					</div>
+				</div>
 
 				<div class="row">
 					<div class="col-xl-6 col-xxl-5 d-flex">
@@ -103,80 +221,22 @@
 					</div>
 
 					<div class="col-xl-6 col-xxl-7">
-						<div class="card flex-fill w-100">
-							<div class="card-header">
-
-								<h5 class="card-title mb-0">Recent Movement</h5>
-							</div>
-							<div class="card-body py-3">
-								<div class="chart chart-sm">
-									<canvas id="chartjs-dashboard-line"></canvas>
-								</div>
-							</div>
-						</div>
+						<app-graph></app-graph>
 					</div>
+
 				</div>
 
 				<div class="row">
 					<div class="col-12 col-md-6 col-xxl-3 d-flex order-2 order-xxl-3">
-						<div class="card flex-fill w-100">
-							<div class="card-header">
-
-								<h5 class="card-title mb-0">Browser Usage</h5>
-							</div>
-							<div class="card-body d-flex">
-								<div class="align-self-center w-100">
-									<div class="py-3">
-										<div class="chart chart-xs">
-											<canvas id="chartjs-dashboard-pie"></canvas>
-										</div>
-									</div>
-
-									<table class="table mb-0">
-										<tbody>
-											<tr>
-												<td>Chrome</td>
-												<td class="text-end">4306</td>
-											</tr>
-											<tr>
-												<td>Firefox</td>
-												<td class="text-end">3801</td>
-											</tr>
-											<tr>
-												<td>IE</td>
-												<td class="text-end">1689</td>
-											</tr>
-										</tbody>
-									</table>
-								</div>
-							</div>
-						</div>
+						<app-distribution></app-distribution>
 					</div>
 					<div class="col-12 col-md-12 col-xxl-6 d-flex order-3 order-xxl-2">
 						<div class="card flex-fill w-100">
-							<div class="card-header">
-
-								<h5 class="card-title mb-0">Real-Time</h5>
-							</div>
-							<div class="card-body px-4">
-								<div id="world_map" style="height:350px;"></div>
-							</div>
+							<app-map></app-map>
 						</div>
 					</div>
 					<div class="col-12 col-md-6 col-xxl-3 d-flex order-1 order-xxl-1">
-						<div class="card flex-fill">
-							<div class="card-header">
-
-								<h5 class="card-title mb-0">Calendar</h5>
-							</div>
-							<div class="card-body d-flex">
-								<div class="align-self-center w-100">
-									<div class="chart">
-										<div id="datetimepicker-dashboard"></div>
-									</div>
-								</div>
-							</div>
-						</div>
+						<app-calendar></app-calendar>
 					</div>
 				</div>
 
