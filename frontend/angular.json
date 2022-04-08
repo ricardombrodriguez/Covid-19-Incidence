@@ -30,7 +30,6 @@
               "src/styles.css"
             ],
             "scripts": [
-              "assets/static/js/app.js"
             ]
           },
           "configurations": {
@@ -99,7 +98,6 @@
               "src/styles.css"
             ],
             "scripts": [
-              "assets/static/js/app.js"
             ]
           }
         }

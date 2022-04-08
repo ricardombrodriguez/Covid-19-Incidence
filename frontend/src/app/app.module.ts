@@ -10,6 +10,7 @@ import { MapComponent } from './components/map/map.component';
 import { CalendarComponent } from './components/calendar/calendar.component';
 import { NewsComponent } from './components/news/news.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { DistributionComponent } from './components/distribution/distribution.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
     MapComponent,
     CalendarComponent,
     NewsComponent,
-    DashboardComponent
+    DashboardComponent,
+    DistributionComponent
   ],
   imports: [
     BrowserModule,
