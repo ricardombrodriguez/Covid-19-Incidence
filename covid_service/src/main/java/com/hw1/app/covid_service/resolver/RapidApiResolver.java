@@ -4,11 +4,11 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 import com.hw1.app.covid_service.connection.HttpClient;
 import com.hw1.app.covid_service.model.Statistic;
 import org.apache.http.client.utils.URIBuilder;
@@ -113,6 +113,28 @@ public class RapidApiResolver {
         
     }
 
+    public List<Statistic> getCountryIntervalHistory(String country, Date initial, Date end) throws URISyntaxException, IOException, ParseException {
+
+        LocalDate initialDate = initial.toInstant()
+                                        .atZone(ZoneId.systemDefault())
+                                        .toLocalDate();
+
+        LocalDate endDate = end.toInstant()
+                                .atZone(ZoneId.systemDefault())
+                                .toLocalDate();
+
+        List<Statistic> countryHistory = getCountryHistory(country);
+
+        for (Statistic stat : countryHistory) {
+            if (stat.getTime().isBefore(initialDate) || stat.getTime().isAfter(endDate)) {
+                countryHistory.remove(stat);
+            }
+        }
+
+        return countryHistory;
+        
+    }
+
     public Statistic parseStatistic(JSONObject stat) {
 
         String cntry = (String) stat.get("country");
@@ -141,7 +163,6 @@ public class RapidApiResolver {
         String time_str = ((String) stat.get("time")).replace("+00:00","");
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
         LocalDate date = LocalDate.parse(time_str, formatter);
-        System.out.println(time_str);
 
         return new Statistic(cntry, continent, population, new_cases, recovered, total_cases, new_critical, active, cases_per_million, total_tests, tests_per_million, new_deaths, total_deaths, deaths_per_million, date);
 

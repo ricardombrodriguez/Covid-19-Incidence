@@ -22,9 +22,11 @@ export class DashboardComponent implements OnInit {
   }
 
   getCountryHistory(): void {
+    console.log("Country history:")
     this.statisticService.getCountryHistory(this.country).subscribe((statistics) => {
       this.statistics = statistics;
       console.log(this.statistics);
+      console.log(this.statistics[0])
     });
   }
 

@@ -2,17 +2,17 @@ export class Statistic {
 
     country! : string;
     population! : number;
-    new_cases! : number;
+    newCases! : number;
     recovered! : number;
-    total_cases! : number;
-    new_critical! : number;
+    totalCases! : number;
+    newCritical! : number;
     active! : number;
-    cases_per_million! : number;
-    total_tests! : number;
-    tests_per_million! : number;
-    new_deaths! : number;
-    total_deaths! : number;
-    deaths_per_million! : number;
+    casesPerMillion! : number;
+    totalTests! : number;
+    testsPerMillion! : number;
+    newDeaths! : number;
+    totalDeaths! : number;
+    deathsPerMillion! : number;
     time! : Date;
 
 }

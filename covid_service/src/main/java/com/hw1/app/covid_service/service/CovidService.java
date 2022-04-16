@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 import com.hw1.app.covid_service.model.Statistic;
 import com.hw1.app.covid_service.resolver.RapidApiResolver;
@@ -32,6 +31,11 @@ public class CovidService {
     public List<Statistic> getCountryHistory(String country) throws URISyntaxException, IOException, ParseException {
         
         return rapidApiResolver.getCountryHistory(country);
+    }
+
+    public List<Statistic> getCountryIntervalHistory(String country, Date initial, Date end) throws URISyntaxException, IOException, ParseException {
+
+        return rapidApiResolver.getCountryIntervalHistory(country, initial, end);
     }
     
 }

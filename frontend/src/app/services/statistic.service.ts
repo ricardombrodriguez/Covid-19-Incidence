@@ -14,16 +14,6 @@ export class StatisticService {
     return this.http.get<string[]>(environment.API_URL + '/countries');
   }
 
-  getAllCountriesStatistics(): Observable<Statistic[]> {
-    return this.http.get<Statistic[]>(environment.API_URL + '/all_statistics');
-  }
-
-  getCountryStatistics(country : string): Observable<Statistic> {
-    let params = new HttpParams();
-    params = params.append('country', country);
-    return this.http.get<Statistic>(environment.API_URL + '/statistics', { params: params } );
-  }
-
   getCountryHistoryByDate(country : string, day : string): Observable<Statistic[]> {
     let params = new HttpParams();
     params = params.append('country', country);
@@ -35,6 +25,14 @@ export class StatisticService {
     let params = new HttpParams();
     params = params.append('country', country);
     return this.http.get<Statistic[]>(environment.API_URL + '/history', { params: params } );
+  }
+
+  getCountryIntervalHistory(country : string, initial : string, end : string): Observable<Statistic[]> {
+    let params = new HttpParams();
+    params = params.append('country', country);
+    params = params.append('initial', initial);
+    params = params.append('end', end);
+    return this.http.get<Statistic[]>(environment.API_URL + '/interval_history', { params: params } );
   }
 
 }

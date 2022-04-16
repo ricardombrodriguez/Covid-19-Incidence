@@ -26,11 +26,13 @@ public class HttpClient {
                 HttpEntity entity = response.getEntity();
                 return EntityUtils.toString(entity);
             } finally {
-                response.close();
+                if (response != null)
+                    response.close();
             }
 
         } finally {
-            client.close();
+            if (client != null)
+                client.close();
         }
 
     }
