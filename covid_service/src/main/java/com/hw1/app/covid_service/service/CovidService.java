@@ -19,29 +19,23 @@ public class CovidService {
     @Autowired
     private RapidApiResolver rapidApiResolver;
 
-    public List<Statistic> getAllCountries() throws URISyntaxException, IOException, ParseException {
+    public List<String> getAllCountries() throws URISyntaxException, IOException, ParseException {
 
-        rapidApiResolver.getCountries();
-
-        return null;
+        return rapidApiResolver.getCountries();
     }
 
     public List<Statistic> getAllCountriesStatistics() throws URISyntaxException, IOException, ParseException {
 
-        rapidApiResolver.getAllCountriesStatistics();
-
-        return null;
+        return rapidApiResolver.getAllCountriesStatistics();
     }
 
 
     public Optional<Statistic> getCountryStatistics(String country) throws URISyntaxException, IOException, ParseException {
 
-        rapidApiResolver.getCountryStatistics(country);
-
-        return null;
+        return rapidApiResolver.getCountryStatistics(country);
     }
 
-    public Optional<Statistic> getCountryDayHistory(String country, Date date) throws URISyntaxException, IOException, ParseException {
+    public List<Statistic> getCountryDayHistory(String country, Date date) throws URISyntaxException, IOException, ParseException {
 
         return rapidApiResolver.getCountryHistoryByDate(country, date);
     }

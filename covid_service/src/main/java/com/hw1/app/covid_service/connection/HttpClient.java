@@ -26,8 +26,10 @@ public class HttpClient {
 
         } finally {
 
-            if (response != null) 
+            if (response != null) {
                 response.close();
+                client.close();
+            }
         }
 
     }

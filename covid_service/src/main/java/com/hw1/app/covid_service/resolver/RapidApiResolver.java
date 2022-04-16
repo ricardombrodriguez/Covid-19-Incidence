@@ -5,7 +5,6 @@ import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -80,36 +79,7 @@ public class RapidApiResolver {
 
             JSONObject stat = (JSONObject) jsonArray.get(i);
 
-            String cntry = (String) stat.get("country");
-            String continent = (String) stat.get("continent");
-            Integer population = (stat.get("population") != null) ? ((Long) stat.get("population")).intValue() : null;
-
-            JSONObject cases = (JSONObject) stat.get("cases");
-            String cases_str = (cases.get("new") != null) ? (String) cases.get("new") : null;
-            Integer new_cases = (cases_str != null) ? Integer.parseInt(cases_str.replace("+", "")) : null;
-            Integer recovered = (cases.get("recovered") != null) ? ((Long) cases.get("recovered")).intValue() : null;
-            Integer total_cases = (cases.get("total") != null) ? ((Long) cases.get("total")).intValue() : null;
-            Integer new_critical = (cases.get("critical") != null) ? ((Long) cases.get("critical")).intValue() : null;
-            Integer active = (cases.get("active") != null) ? ((Long) cases.get("active")).intValue() : null;
-            Double cases_per_million = (cases.get("1M_pop") != null) ? Double.parseDouble((String) cases.get("1M_pop")) : null;
-
-            JSONObject tests = (JSONObject) stat.get("tests");
-            Integer total_tests = (tests.get("total") != null) ? ((Long) tests.get("total")).intValue() : null;
-            Double tests_per_million = (tests.get("1M_pop") != null) ? Double.parseDouble((String) tests.get("1M_pop")) : null;
-
-            JSONObject deaths = (JSONObject) stat.get("deaths");
-            String deaths_str = (deaths.get("new") != null) ? (String) deaths.get("new") : null;
-            Integer new_deaths = (deaths_str != null) ? Integer.parseInt(deaths_str.replace("+", "")) : null;
-            Integer total_deaths = (deaths.get("total") != null) ? ((Long) deaths.get("total")).intValue() : null;
-            Double deaths_per_million = (deaths.get("1M_pop") != null) ? Double.parseDouble((String) deaths.get("1M_pop")) : null;
-
-            String time_str = ((String) stat.get("time")).replace("+00:00","");
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
-            LocalDate date = LocalDate.parse(time_str, formatter);
-
-            Statistic newStatistic = new Statistic(cntry, continent, population, new_cases, recovered, total_cases, new_critical, active, cases_per_million, total_tests, tests_per_million, new_deaths, total_deaths, deaths_per_million, date);
-            
-            System.out.println(newStatistic);
+            Statistic newStatistic = parseStatistic(stat);
 
             countriesStatistics.add(newStatistic);
 
@@ -146,40 +116,15 @@ public class RapidApiResolver {
 
             JSONObject stat = (JSONObject) jsonArray.get(0);
 
-            String cntry = (String) stat.get("country");
-            String continent = (String) stat.get("continent");
-            Integer population = (stat.get("population") != null) ? ((Long) stat.get("population")).intValue() : null;
+            Statistic newStatistic = parseStatistic(stat);
 
-            JSONObject cases = (JSONObject) stat.get("cases");
-            String cases_str = (cases.get("new") != null) ? (String) cases.get("new") : null;
-            Integer new_cases = (cases_str != null) ? Integer.parseInt(cases_str.replace("+", "")) : null;
-            Integer recovered = (cases.get("recovered") != null) ? ((Long) cases.get("recovered")).intValue() : null;
-            Integer total_cases = (cases.get("total") != null) ? ((Long) cases.get("total")).intValue() : null;
-            Integer new_critical = (cases.get("critical") != null) ? ((Long) cases.get("critical")).intValue() : null;
-            Integer active = (cases.get("active") != null) ? ((Long) cases.get("active")).intValue() : null;
-            Double cases_per_million = (cases.get("1M_pop") != null) ? Double.parseDouble((String) cases.get("1M_pop")) : null;
-
-            JSONObject tests = (JSONObject) stat.get("tests");
-            Integer total_tests = (tests.get("total") != null) ? ((Long) tests.get("total")).intValue() : null;
-            Double tests_per_million = (tests.get("1M_pop") != null) ? Double.parseDouble((String) tests.get("1M_pop")) : null;
-
-            JSONObject deaths = (JSONObject) stat.get("deaths");
-            String deaths_str = (deaths.get("new") != null) ? (String) deaths.get("new") : null;
-            Integer new_deaths = (deaths_str != null) ? Integer.parseInt(deaths_str.replace("+", "")) : null;
-            Integer total_deaths = (deaths.get("total") != null) ? ((Long) deaths.get("total")).intValue() : null;
-            Double deaths_per_million = (deaths.get("1M_pop") != null) ? Double.parseDouble((String) deaths.get("1M_pop")) : null;
-
-            String time_str = ((String) stat.get("time")).replace("+00:00","");
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
-            LocalDate date = LocalDate.parse(time_str, formatter);
-
-            return Optional.of(new Statistic(cntry, continent, population, new_cases, recovered, total_cases, new_critical, active, cases_per_million, total_tests, tests_per_million, new_deaths, total_deaths, deaths_per_million, date));
+            return Optional.of(newStatistic);
 
         }
 
     }
 
-    public Optional<Statistic> getCountryHistoryByDate(String country, Date day) throws URISyntaxException, IOException, ParseException {
+    public List<Statistic> getCountryHistoryByDate(String country, Date day) throws URISyntaxException, IOException, ParseException {
 
         SimpleDateFormat date_formatter = new SimpleDateFormat("yyyy-MM-dd");  
         String formatted_date = date_formatter.format(day);  
@@ -194,44 +139,21 @@ public class RapidApiResolver {
 
         JSONArray jsonArray = (JSONArray) obj.get("response");
 
-        if (jsonArray.isEmpty()) {
+        List<Statistic> countryHistory = new ArrayList<Statistic>();
 
-            return Optional.empty();
+        for (int i = 0; i < jsonArray.size(); i++) {
 
-        } else {
+            JSONObject stat = (JSONObject) jsonArray.get(i);
 
-            JSONObject stat = (JSONObject) jsonArray.get(0);
+            Statistic newStatistic = parseStatistic(stat);
 
-            String cntry = (String) stat.get("country");
-            String continent = (String) stat.get("continent");
-            Integer population = (stat.get("population") != null) ? ((Long) stat.get("population")).intValue() : null;
-
-            JSONObject cases = (JSONObject) stat.get("cases");
-            String cases_str = (cases.get("new") != null) ? (String) cases.get("new") : null;
-            Integer new_cases = (cases_str != null) ? Integer.parseInt(cases_str.replace("+", "")) : null;
-            Integer recovered = (cases.get("recovered") != null) ? ((Long) cases.get("recovered")).intValue() : null;
-            Integer total_cases = (cases.get("total") != null) ? ((Long) cases.get("total")).intValue() : null;
-            Integer new_critical = (cases.get("critical") != null) ? ((Long) cases.get("critical")).intValue() : null;
-            Integer active = (cases.get("active") != null) ? ((Long) cases.get("active")).intValue() : null;
-            Double cases_per_million = (cases.get("1M_pop") != null) ? Double.parseDouble((String) cases.get("1M_pop")) : null;
-
-            JSONObject tests = (JSONObject) stat.get("tests");
-            Integer total_tests = (tests.get("total") != null) ? ((Long) tests.get("total")).intValue() : null;
-            Double tests_per_million = (tests.get("1M_pop") != null) ? Double.parseDouble((String) tests.get("1M_pop")) : null;
-
-            JSONObject deaths = (JSONObject) stat.get("deaths");
-            String deaths_str = (deaths.get("new") != null) ? (String) deaths.get("new") : null;
-            Integer new_deaths = (deaths_str != null) ? Integer.parseInt(deaths_str.replace("+", "")) : null;
-            Integer total_deaths = (deaths.get("total") != null) ? ((Long) deaths.get("total")).intValue() : null;
-            Double deaths_per_million = (deaths.get("1M_pop") != null) ? Double.parseDouble((String) deaths.get("1M_pop")) : null;
-
-            String time_str = ((String) stat.get("time")).replace("+00:00","");
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
-            LocalDate date = LocalDate.parse(time_str, formatter);
-
-            return Optional.of(new Statistic(cntry, continent, population, new_cases, recovered, total_cases, new_critical, active, cases_per_million, total_tests, tests_per_million, new_deaths, total_deaths, deaths_per_million, date));
+            countryHistory.add(newStatistic);
 
         }
+
+        System.out.println(countryHistory);
+
+        return countryHistory;
         
     }
 
@@ -252,45 +174,50 @@ public class RapidApiResolver {
         // Iterating each day/statistic
         for (int i = 0; i < jsonArray.size(); i++) {
 
-            JSONObject stat = (JSONObject) jsonArray.get(0);
+            JSONObject stat = (JSONObject) jsonArray.get(i);
 
-            String cntry = (String) stat.get("country");
-            String continent = (String) stat.get("continent");
-            Integer population = (stat.get("population") != null) ? ((Long) stat.get("population")).intValue() : null;
-
-            JSONObject cases = (JSONObject) stat.get("cases");
-            String cases_str = (cases.get("new") != null) ? (String) cases.get("new") : null;
-            Integer new_cases = (cases_str != null) ? Integer.parseInt(cases_str.replace("+", "")) : null;
-            Integer recovered = (cases.get("recovered") != null) ? ((Long) cases.get("recovered")).intValue() : null;
-            Integer total_cases = (cases.get("total") != null) ? ((Long) cases.get("total")).intValue() : null;
-            Integer new_critical = (cases.get("critical") != null) ? ((Long) cases.get("critical")).intValue() : null;
-            Integer active = (cases.get("active") != null) ? ((Long) cases.get("active")).intValue() : null;
-            Double cases_per_million = (cases.get("1M_pop") != null) ? Double.parseDouble((String) cases.get("1M_pop")) : null;
-
-            JSONObject tests = (JSONObject) stat.get("tests");
-            Integer total_tests = (tests.get("total") != null) ? ((Long) tests.get("total")).intValue() : null;
-            Double tests_per_million = (tests.get("1M_pop") != null) ? Double.parseDouble((String) tests.get("1M_pop")) : null;
-
-            JSONObject deaths = (JSONObject) stat.get("deaths");
-            String deaths_str = (deaths.get("new") != null) ? (String) deaths.get("new") : null;
-            Integer new_deaths = (deaths_str != null) ? Integer.parseInt(deaths_str.replace("+", "")) : null;
-            Integer total_deaths = (deaths.get("total") != null) ? ((Long) deaths.get("total")).intValue() : null;
-            Double deaths_per_million = (deaths.get("1M_pop") != null) ? Double.parseDouble((String) deaths.get("1M_pop")) : null;
-
-            String time_str = ((String) stat.get("time")).replace("+00:00","");
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
-            LocalDate date = LocalDate.parse(time_str, formatter);
-
-            Statistic newStatistic = new Statistic(cntry, continent, population, new_cases, recovered, total_cases, new_critical, active, cases_per_million, total_tests, tests_per_million, new_deaths, total_deaths, deaths_per_million, date);
+            Statistic newStatistic = parseStatistic(stat);
 
             countryHistory.add(newStatistic);
 
         }
 
-        System.out.println(countryHistory);
-
         return countryHistory;
         
+    }
+
+    public Statistic parseStatistic(JSONObject stat) {
+
+        String cntry = (String) stat.get("country");
+        String continent = (String) stat.get("continent");
+        Integer population = (stat.get("population") != null) ? ((Long) stat.get("population")).intValue() : null;
+
+        JSONObject cases = (JSONObject) stat.get("cases");
+        String cases_str = (cases.get("new") != null) ? (String) cases.get("new") : null;
+        Integer new_cases = (cases_str != null) ? Integer.parseInt(cases_str.replace("+", "")) : null;
+        Integer recovered = (cases.get("recovered") != null) ? ((Long) cases.get("recovered")).intValue() : null;
+        Integer total_cases = (cases.get("total") != null) ? ((Long) cases.get("total")).intValue() : null;
+        Integer new_critical = (cases.get("critical") != null) ? ((Long) cases.get("critical")).intValue() : null;
+        Integer active = (cases.get("active") != null) ? ((Long) cases.get("active")).intValue() : null;
+        Double cases_per_million = (cases.get("1M_pop") != null) ? Double.parseDouble((String) cases.get("1M_pop")) : null;
+
+        JSONObject tests = (JSONObject) stat.get("tests");
+        Integer total_tests = (tests.get("total") != null) ? ((Long) tests.get("total")).intValue() : null;
+        Double tests_per_million = (tests.get("1M_pop") != null) ? Double.parseDouble((String) tests.get("1M_pop")) : null;
+
+        JSONObject deaths = (JSONObject) stat.get("deaths");
+        String deaths_str = (deaths.get("new") != null) ? (String) deaths.get("new") : null;
+        Integer new_deaths = (deaths_str != null) ? Integer.parseInt(deaths_str.replace("+", "")) : null;
+        Integer total_deaths = (deaths.get("total") != null) ? ((Long) deaths.get("total")).intValue() : null;
+        Double deaths_per_million = (deaths.get("1M_pop") != null) ? Double.parseDouble((String) deaths.get("1M_pop")) : null;
+
+        String time_str = ((String) stat.get("time")).replace("+00:00","");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+        LocalDate date = LocalDate.parse(time_str, formatter);
+        System.out.println(time_str);
+
+        return new Statistic(cntry, continent, population, new_cases, recovered, total_cases, new_critical, active, cases_per_million, total_tests, tests_per_million, new_deaths, total_deaths, deaths_per_million, date);
+
     }
 
 }

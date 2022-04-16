@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-statistic',
@@ -6,6 +6,12 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./statistic.component.css']
 })
 export class StatisticComponent implements OnInit {
+
+  @Input() title! : string;
+  @Input() value! : number;
+  @Input() differential! : number;
+  @Input() description! : string;
+  @Input() icon! : string;
 
   constructor() { }
 

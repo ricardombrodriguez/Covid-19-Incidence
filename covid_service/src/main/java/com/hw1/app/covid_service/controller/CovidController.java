@@ -25,7 +25,7 @@ public class CovidController {
     private CovidService countryService;
 
     @GetMapping("/countries")
-    public List<Statistic> getAllCountries() throws URISyntaxException, IOException, ParseException {
+    public List<String> getAllCountries() throws URISyntaxException, IOException, ParseException {
         return countryService.getAllCountries();
     }
     
@@ -40,7 +40,7 @@ public class CovidController {
     }
 
     @GetMapping("/day_history")
-    public Optional<Statistic> getCountryDayHistory(@RequestParam String country, @RequestParam @DateTimeFormat(pattern="yyyy-MM-dd") Date day) throws URISyntaxException, IOException, ParseException {
+    public List<Statistic> getCountryDayHistory(@RequestParam String country, @RequestParam @DateTimeFormat(pattern="yyyy-MM-dd") Date day) throws URISyntaxException, IOException, ParseException {
         return countryService.getCountryDayHistory(country, day);
     }
 
