@@ -21,15 +21,12 @@ import org.springframework.stereotype.Component;
 import org.json.simple.parser.ParseException;
 import org.json.simple.JSONArray;
 
-
-/*
-https://rapidapi.com/api-sports/api/covid-193/
-*/
-
 @Component
 public class RapidApiResolver {
 
     private static Logger logger = LogManager.getLogger(RapidApiResolver.class);
+
+    private static final String BASE_URL = "https://covid-193.p.rapidapi.com/"; 
 
     @Autowired
     private HttpClient httpClient;
@@ -40,7 +37,7 @@ public class RapidApiResolver {
 
         List<String> allCountries = new ArrayList<String>();
 
-        URIBuilder uriBuilder = new URIBuilder("https://covid-193.p.rapidapi.com/countries");
+        URIBuilder uriBuilder = new URIBuilder(BASE_URL + "countries");
 
         String apiResponse = this.httpClient.doHttpGet(uriBuilder.build().toString());
 
@@ -54,74 +51,10 @@ public class RapidApiResolver {
 
         logger.info(apiResponse);
 
-        logger.info("[RapidApiResolver] Returned all " + jsonArray.size() + " countries");
+        logger.info("[RapidApiResolver] Returned all {0} countries", jsonArray.size());
 
         return allCountries;
     
-    }
-
-    public List<Statistic> getAllCountriesStatistics() throws URISyntaxException, IOException, ParseException {
-
-        logger.info("[RapidApiResolver] Retrieving all country statistics...");
-        
-        URIBuilder uriBuilder = new URIBuilder("https://covid-193.p.rapidapi.com/statistics");
-        
-        String apiResponse = this.httpClient.doHttpGet(uriBuilder.build().toString());
-
-        JSONObject obj = (JSONObject) new JSONParser().parse(apiResponse);
-
-        JSONArray jsonArray = (JSONArray) obj.get("response");
-
-        List<Statistic> countriesStatistics = new ArrayList<Statistic>();
-
-        // Iterating each country
-        for (int i = 0; i < jsonArray.size(); i++) {
-
-            JSONObject stat = (JSONObject) jsonArray.get(i);
-
-            Statistic newStatistic = parseStatistic(stat);
-
-            countriesStatistics.add(newStatistic);
-
-        }
-
-        logger.info("[RapidApiResolver] Countries statistics (for today):");
-
-        logger.info(countriesStatistics);
-        System.out.println(countriesStatistics);
-
-        return countriesStatistics;
-
-    }
-
-    public Optional<Statistic> getCountryStatistics(String country) throws URISyntaxException, IOException, ParseException {
-
-        logger.info("[RapidApiResolver] Retrieving " + country + " statistics...");
-
-        URIBuilder uriBuilder = new URIBuilder("https://covid-193.p.rapidapi.com/statistics?country=" + country);
-        
-        String apiResponse = this.httpClient.doHttpGet(uriBuilder.build().toString());
-
-        System.out.println(apiResponse);
-
-        JSONObject obj = (JSONObject) new JSONParser().parse(apiResponse);
-
-        JSONArray jsonArray = (JSONArray) obj.get("response");
-
-        if (jsonArray.isEmpty()) {
-
-            return Optional.empty();
-
-        } else {
-
-            JSONObject stat = (JSONObject) jsonArray.get(0);
-
-            Statistic newStatistic = parseStatistic(stat);
-
-            return Optional.of(newStatistic);
-
-        }
-
     }
 
     public List<Statistic> getCountryHistoryByDate(String country, Date day) throws URISyntaxException, IOException, ParseException {
@@ -129,11 +62,9 @@ public class RapidApiResolver {
         SimpleDateFormat date_formatter = new SimpleDateFormat("yyyy-MM-dd");  
         String formatted_date = date_formatter.format(day);  
 
-        URIBuilder uriBuilder = new URIBuilder("https://covid-193.p.rapidapi.com/history?country=" + country + "&day=" + formatted_date);
+        URIBuilder uriBuilder = new URIBuilder(BASE_URL + "history?country=" + country + "&day=" + formatted_date);
 
         String apiResponse = this.httpClient.doHttpGet(uriBuilder.build().toString());
-
-        System.out.println(apiResponse);
 
         JSONObject obj = (JSONObject) new JSONParser().parse(apiResponse);
 
@@ -151,19 +82,15 @@ public class RapidApiResolver {
 
         }
 
-        System.out.println(countryHistory);
-
         return countryHistory;
         
     }
 
     public List<Statistic> getCountryHistory(String country) throws URISyntaxException, IOException, ParseException {
 
-        URIBuilder uriBuilder = new URIBuilder("https://covid-193.p.rapidapi.com/history?country=" + country);
+        URIBuilder uriBuilder = new URIBuilder(BASE_URL + "history?country=" + country);
 
         String apiResponse = this.httpClient.doHttpGet(uriBuilder.build().toString());
-
-        System.out.println(apiResponse);
 
         JSONObject obj = (JSONObject) new JSONParser().parse(apiResponse);
 

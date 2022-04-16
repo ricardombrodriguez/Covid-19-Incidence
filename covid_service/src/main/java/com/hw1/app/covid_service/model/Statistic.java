@@ -12,11 +12,6 @@ import javax.persistence.Id;
 @Entity
 public class Statistic {
 
-    // @Id
-    // @GeneratedValue(strategy = GenerationType.IDENTITY)
-    // @Column(name = "id")
-    // private Integer id;
-
     @Id
     @Column(nullable = false)
     private String country;

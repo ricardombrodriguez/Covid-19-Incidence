@@ -14,22 +14,23 @@ public class HttpClient {
 
     public String doHttpGet(String url) throws IOException {
 
-        CloseableHttpClient client = HttpClients.createDefault();
-        HttpGet request = new HttpGet(url);
-        request.addHeader("X-RapidAPI-Key", "52450d0ccemsh0366c89f991686fp1cda94jsn99c2ccbeab83");
-        CloseableHttpResponse response = client.execute(request);
+        CloseableHttpClient client = null;
 
         try {
 
-            HttpEntity entity = response.getEntity();
-            return EntityUtils.toString(entity);
+            client = HttpClients.createDefault();
+            HttpGet request = new HttpGet(url);
+            request.addHeader("X-RapidAPI-Key", "52450d0ccemsh0366c89f991686fp1cda94jsn99c2ccbeab83");
+            CloseableHttpResponse response = client.execute(request);
+            try {
+                HttpEntity entity = response.getEntity();
+                return EntityUtils.toString(entity);
+            } finally {
+                response.close();
+            }
 
         } finally {
-
-            if (response != null) {
-                response.close();
-                client.close();
-            }
+            client.close();
         }
 
     }
