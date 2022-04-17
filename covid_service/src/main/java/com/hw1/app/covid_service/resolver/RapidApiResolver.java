@@ -7,8 +7,11 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.NoSuchElementException;
+
 import com.hw1.app.covid_service.connection.HttpClient;
 import com.hw1.app.covid_service.model.Statistic;
 import org.apache.http.client.utils.URIBuilder;
@@ -39,17 +42,11 @@ public class RapidApiResolver {
 
         URIBuilder uriBuilder = new URIBuilder(BASE_URL + "countries");
 
-        String apiResponse = this.httpClient.doHttpGet(uriBuilder.build().toString());
-
-        JSONObject obj = (JSONObject) new JSONParser().parse(apiResponse);
-
-        JSONArray jsonArray = (JSONArray) obj.get("response");
+        JSONArray jsonArray = getJsonArray(uriBuilder);
 
         for (int i = 0; i < jsonArray.size(); i++) {
             allCountries.add((String) jsonArray.get(i));
         }
-
-        logger.info(apiResponse);
 
         logger.info("[RapidApiResolver] Returned all {0} countries", jsonArray.size());
 
@@ -64,11 +61,7 @@ public class RapidApiResolver {
 
         URIBuilder uriBuilder = new URIBuilder(BASE_URL + "history?country=" + country + "&day=" + formatted_date);
 
-        String apiResponse = this.httpClient.doHttpGet(uriBuilder.build().toString());
-
-        JSONObject obj = (JSONObject) new JSONParser().parse(apiResponse);
-
-        JSONArray jsonArray = (JSONArray) obj.get("response");
+        JSONArray jsonArray = getJsonArray(uriBuilder);
 
         List<Statistic> countryHistory = new ArrayList<Statistic>();
 
@@ -90,13 +83,13 @@ public class RapidApiResolver {
 
         URIBuilder uriBuilder = new URIBuilder(BASE_URL + "history?country=" + country);
 
-        String apiResponse = this.httpClient.doHttpGet(uriBuilder.build().toString());
-
-        JSONObject obj = (JSONObject) new JSONParser().parse(apiResponse);
-
-        JSONArray jsonArray = (JSONArray) obj.get("response");
+        JSONArray jsonArray = getJsonArray(uriBuilder);
 
         List<Statistic> countryHistory = new ArrayList<Statistic>();
+
+        LocalDate currentDate = null;
+
+        List<Statistic> dayStatistics = new ArrayList<Statistic>();
 
         // Iterating each day/statistic
         for (int i = 0; i < jsonArray.size(); i++) {
@@ -104,9 +97,24 @@ public class RapidApiResolver {
             JSONObject stat = (JSONObject) jsonArray.get(i);
 
             Statistic newStatistic = parseStatistic(stat);
+            if (newStatistic.getNewCases() == null) newStatistic.setNewCases(0);
 
-            countryHistory.add(newStatistic);
+            LocalDate statisticDate = LocalDate.from(newStatistic.getTime());
 
+            // Choose the best statistic for each day (ignoring redundancy and low fidelity stats) - the one with the most new cases
+            if (currentDate == null) {
+                currentDate = statisticDate;
+                dayStatistics.add(newStatistic);
+            } else if (currentDate.equals(statisticDate)) {
+                dayStatistics.add(newStatistic);
+            } else {
+                Statistic choosenStatistic = dayStatistics.stream().max(Comparator.comparing(Statistic::getNewCases)).orElseThrow(NoSuchElementException::new);
+                countryHistory.add(choosenStatistic);
+                currentDate = statisticDate;
+                dayStatistics.clear();
+                dayStatistics.add(newStatistic);
+
+            }
         }
 
         return countryHistory;
@@ -133,6 +141,16 @@ public class RapidApiResolver {
 
         return countryHistory;
         
+    }
+
+    public JSONArray getJsonArray(URIBuilder uriBuilder) throws IOException, URISyntaxException, ParseException {
+
+        String apiResponse = this.httpClient.doHttpGet(uriBuilder.build().toString());
+
+        JSONObject obj = (JSONObject) new JSONParser().parse(apiResponse);
+
+        return (JSONArray) obj.get("response");
+
     }
 
     public Statistic parseStatistic(JSONObject stat) {

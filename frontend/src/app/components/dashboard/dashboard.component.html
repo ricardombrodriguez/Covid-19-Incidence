@@ -1,3 +1,4 @@
+
 <style>
 
 .hero__search {
@@ -8,7 +9,7 @@
 .hero__search__form {
 	width: 610px;
 	height: 50px;
-	border: 1px solid #ebebeb;
+	border: 0px solid #ebebeb;
 	position: relative;
 	float: left;
 }
@@ -44,7 +45,7 @@
 .hero__search__form form input {
 	width: 70%;
 	border: none;
-	height: 48px;
+	height: 50px;
 	font-size: 16px;
 	color: #b2b2b2;
 	padding-left: 20px;
@@ -55,9 +56,7 @@
 }
 
 .hero__search__form form button {
-	position: absolute;
 	right: 0;
-	top: -1px;
 	height: 50px;
 }
 
@@ -79,10 +78,6 @@
 	background: #ffffff;
 }
 
-.hero.hero-normal .hero__search {
-	margin-bottom: 0;
-}
-
 #inner {
 	width: 50%;
 	margin: 0 auto;
@@ -91,7 +86,7 @@
 .site-btn {
 	font-size: 14px;
 	height: 60px;
-	width: 200px;
+	width: 140px;
 	text-align: center;
 	color: #ffffff;
 	font-weight: 800;
@@ -99,6 +94,8 @@
 	align-items: center;
 	background: #2054a3;
 	border: none;
+	position: relative;
+
 }
 
 #search {
@@ -107,7 +104,7 @@
 }
 
 .main {
-    background-color: rgb(148, 156, 230);
+	background-color: rgb(125, 118, 224);
 }
 
 </style>
@@ -136,118 +133,40 @@
 					<div class="col-xl-12 col-xxl-12 d-flex">
 						<div class="w-100">
 							<div class="row">
-								<div class="col-sm-3">
-
-									<app-statistic [title]="'New cases'" [value]="statistics[0].newCases" [differential]="0" [description]="'since the last 24 hours'" [icon]="'mdi mdi-clipboard-plus'"></app-statistic>
-									<app-statistic [title]="'New critical'" [value]="statistics[0].newCritical" [differential]="1" [description]="'since the last 24 hours'" [icon]="'mdi mdi-clipboard-plus'"></app-statistic>
+								<div class="col-md-3 col-sm-6">
+									<app-statistic [title]="'New cases'" [value]="statistics[0].newCases" [differential]="newCasesDifferential" [description]="'since the last 24 hours'"></app-statistic>
+									<app-statistic [title]="'New critical'" [value]="statistics[0].newCritical" [differential]="newCriticalDifferential" [description]="'since the last 24 hours'"></app-statistic>
 								</div>
-								<div class="col-sm-3">
-									<app-statistic [title]="'Active cases'" [value]="statistics[0].active" [differential]="2.82" [description]="'since the last 24 hours'" [icon]="'mdi mdi-clipboard-plus'"></app-statistic>
-									<app-statistic [title]="'Total cases'" [value]="statistics[0].totalCases" [differential]="1.12" [description]="'since the last 24 hours'" [icon]="'mdi mdi-clipboard-plus'"></app-statistic>
+								<div class="col-md-3 col-sm-6">
+									<app-statistic [title]="'Active cases'" [value]="statistics[0].active" [differential]="activeCasesDifferential" [description]="'since the last 24 hours'"></app-statistic>
+									<app-statistic [title]="'Total cases'" [value]="statistics[0].totalCases" [differential]="totalCasesDifferential" [description]="'since the last 24 hours'"></app-statistic>
 								</div>
-								<div class="col-sm-3">
-									<app-statistic [title]="'Recovered'" [value]="statistics[0].recovered" [differential]="0" [description]="'since the last 24 hours'" [icon]="'mdi mdi-clipboard-plus'"></app-statistic>
-									<app-statistic [title]="'Total tests'" [value]="statistics[0].totalTests" [differential]="1" [description]="'since the last 24 hours'" [icon]="'mdi mdi-clipboard-plus'"></app-statistic>
+								<div class="col-md-3 col-sm-6">
+									<app-statistic [title]="'Recovered'" [value]="statistics[0].recovered" [differential]="recoveredDifferential" [description]="'since the last 24 hours'"></app-statistic>
+									<app-statistic [title]="'Total tests'" [value]="statistics[0].totalTests" [differential]="totalTestsDifferential" [description]="'since the last 24 hours'"></app-statistic>
 								</div>
-								<div class="col-sm-3">
-									<app-statistic [title]="'New deaths'" [value]="statistics[0].newDeaths" [differential]="0" [description]="'since the last 24 hours'" [icon]="'mdi mdi-clipboard-plus'"></app-statistic>
-									<app-statistic [title]="'Total deaths'" [value]="statistics[0].totalDeaths" [differential]="1" [description]="'since the last 24 hours'" [icon]="'mdi mdi-clipboard-plus'"></app-statistic>
+								<div class="col-md-3 col-sm-6">
+									<app-statistic [title]="'New deaths'" [value]="statistics[0].newDeaths" [differential]="newDeathsDifferential" [description]="'since the last 24 hours'"></app-statistic>
+									<app-statistic [title]="'Total deaths'" [value]="statistics[0].totalDeaths" [differential]="totalDeathsDifferential" [description]="'since the last 24 hours'"></app-statistic>
 								</div>
+								<h1>{{ statistics[0].time }}</h1>
 							</div>
 						</div>
 					</div>
-
-					<div class="col-xl-6 col-xxl-7">
-						<app-graph></app-graph>
-					</div>
-
 				</div>
 
 				<div class="row">
-					<div class="col-12 col-md-6 col-xxl-3 d-flex order-2 order-xxl-3">
-						<app-distribution></app-distribution>
-					</div>
-					<div class="col-12 col-md-6 col-xxl-3 d-flex order-1 order-xxl-1">
-						<app-calendar></app-calendar>
-					</div>
-				</div>
-
-				<div class="row">
-					<div class="col-12 col-lg-12 col-xxl-12 d-flex">
-						<div class="card flex-fill">
+					<div class="col-xl-12 col-xxl-12">
+						<div class="card flex-fill w-100">
 							<div class="card-header">
-
-								<h5 class="card-title mb-0">Latest Projects</h5>
+						
+								<h5 class="card-title mb-0">COVID-19 history</h5>
 							</div>
-							<table class="table table-hover my-0">
-								<thead>
-									<tr>
-										<th>Name</th>
-										<th class="d-none d-xl-table-cell">Start Date</th>
-										<th class="d-none d-xl-table-cell">End Date</th>
-										<th>Status</th>
-										<th class="d-none d-md-table-cell">Assignee</th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr>
-										<td>Project Apollo</td>
-										<td class="d-none d-xl-table-cell">01/01/2021</td>
-										<td class="d-none d-xl-table-cell">31/06/2021</td>
-										<td><span class="badge bg-success">Done</span></td>
-										<td class="d-none d-md-table-cell">Vanessa Tucker</td>
-									</tr>
-									<tr>
-										<td>Project Fireball</td>
-										<td class="d-none d-xl-table-cell">01/01/2021</td>
-										<td class="d-none d-xl-table-cell">31/06/2021</td>
-										<td><span class="badge bg-danger">Cancelled</span></td>
-										<td class="d-none d-md-table-cell">William Harris</td>
-									</tr>
-									<tr>
-										<td>Project Hades</td>
-										<td class="d-none d-xl-table-cell">01/01/2021</td>
-										<td class="d-none d-xl-table-cell">31/06/2021</td>
-										<td><span class="badge bg-success">Done</span></td>
-										<td class="d-none d-md-table-cell">Sharon Lessman</td>
-									</tr>
-									<tr>
-										<td>Project Nitro</td>
-										<td class="d-none d-xl-table-cell">01/01/2021</td>
-										<td class="d-none d-xl-table-cell">31/06/2021</td>
-										<td><span class="badge bg-warning">In progress</span></td>
-										<td class="d-none d-md-table-cell">Vanessa Tucker</td>
-									</tr>
-									<tr>
-										<td>Project Phoenix</td>
-										<td class="d-none d-xl-table-cell">01/01/2021</td>
-										<td class="d-none d-xl-table-cell">31/06/2021</td>
-										<td><span class="badge bg-success">Done</span></td>
-										<td class="d-none d-md-table-cell">William Harris</td>
-									</tr>
-									<tr>
-										<td>Project X</td>
-										<td class="d-none d-xl-table-cell">01/01/2021</td>
-										<td class="d-none d-xl-table-cell">31/06/2021</td>
-										<td><span class="badge bg-success">Done</span></td>
-										<td class="d-none d-md-table-cell">Sharon Lessman</td>
-									</tr>
-									<tr>
-										<td>Project Romeo</td>
-										<td class="d-none d-xl-table-cell">01/01/2021</td>
-										<td class="d-none d-xl-table-cell">31/06/2021</td>
-										<td><span class="badge bg-success">Done</span></td>
-										<td class="d-none d-md-table-cell">Christina Mason</td>
-									</tr>
-									<tr>
-										<td>Project Wombat</td>
-										<td class="d-none d-xl-table-cell">01/01/2021</td>
-										<td class="d-none d-xl-table-cell">31/06/2021</td>
-										<td><span class="badge bg-warning">In progress</span></td>
-										<td class="d-none d-md-table-cell">William Harris</td>
-									</tr>
-								</tbody>
-							</table>
+							<div class="card-body py-3">
+								<div class="chart chart-sm">
+									<div echarts [options]="options" class="demo-chart"></div>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -271,5 +190,3 @@
 		</footer>
 	</div>
 </div>
-
-

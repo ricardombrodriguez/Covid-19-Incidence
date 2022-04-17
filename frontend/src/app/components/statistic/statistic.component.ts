@@ -8,14 +8,17 @@ import { Component, Input, OnInit } from '@angular/core';
 export class StatisticComponent implements OnInit {
 
   @Input() title! : string;
-  @Input() value! : number;
+  @Input() value! : number | string;
   @Input() differential! : number;
   @Input() description! : string;
-  @Input() icon! : string;
 
   constructor() { }
 
   ngOnInit(): void {
+
+    if (this.value == null)
+      this.value = "No Data";
+      
   }
 
 }
