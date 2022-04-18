@@ -64,14 +64,34 @@ public class RapidApiResolver {
         JSONArray jsonArray = getJsonArray(uriBuilder);
 
         List<Statistic> countryHistory = new ArrayList<Statistic>();
+        
+        LocalDate currentDate = null;
+
+        List<Statistic> dayStatistics = new ArrayList<Statistic>();
 
         for (int i = 0; i < jsonArray.size(); i++) {
 
             JSONObject stat = (JSONObject) jsonArray.get(i);
 
             Statistic newStatistic = parseStatistic(stat);
+            if (newStatistic.getNewCases() == null) newStatistic.setNewCases(0);
 
-            countryHistory.add(newStatistic);
+            LocalDate statisticDate = LocalDate.from(newStatistic.getTime());
+
+            // Choose the best statistic for each day (ignoring redundancy and low fidelity stats) - the one with the most new cases
+            if (currentDate == null) {
+                currentDate = statisticDate;
+                dayStatistics.add(newStatistic);
+            } else if (currentDate.equals(statisticDate)) {
+                dayStatistics.add(newStatistic);
+            } else {
+                Statistic choosenStatistic = dayStatistics.stream().max(Comparator.comparing(Statistic::getNewCases)).orElseThrow(NoSuchElementException::new);
+                countryHistory.add(choosenStatistic);
+                currentDate = statisticDate;
+                dayStatistics.clear();
+                dayStatistics.add(newStatistic);
+
+            }
 
         }
 
