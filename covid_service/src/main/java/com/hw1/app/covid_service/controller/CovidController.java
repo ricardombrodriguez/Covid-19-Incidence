@@ -28,18 +28,10 @@ public class CovidController {
         return countryService.getAllCountries();
     }
 
-    @GetMapping("/day_history")
-    public List<Statistic> getCountryDayHistory(@RequestParam String country, @RequestParam @DateTimeFormat(pattern="yyyy-MM-dd") Date day) throws URISyntaxException, IOException, ParseException {
-        return countryService.getCountryDayHistory(country, day);
-    }
-
-    @GetMapping("/history")
-    public List<Statistic> getCountryHistory(@RequestParam String country) throws URISyntaxException, IOException, ParseException {
-        return countryService.getCountryHistory(country);
-    }
-
     @GetMapping("/interval_history")
-    public List<Statistic> getCountryHistory(@RequestParam String country, @RequestParam @DateTimeFormat(pattern="yyyy-MM-dd") Date initial, @RequestParam @DateTimeFormat(pattern="yyyy-MM-dd") Date end) throws URISyntaxException, IOException, ParseException {
+    public List<Statistic> getCountryHistory(@RequestParam String country, @RequestParam @DateTimeFormat(pattern="dd-MM-yyyy") Date initial, @RequestParam @DateTimeFormat(pattern="dd-MM-yyyy") Date end) throws URISyntaxException, IOException, ParseException {
+        System.out.println(initial);
+        System.out.println(end);
         return countryService.getCountryIntervalHistory(country, initial, end);
     }
 

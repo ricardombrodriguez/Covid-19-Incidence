@@ -23,16 +23,6 @@ public class CovidService {
         return rapidApiResolver.getCountries();
     }
 
-    public List<Statistic> getCountryDayHistory(String country, Date date) throws URISyntaxException, IOException, ParseException {
-
-        return rapidApiResolver.getCountryHistoryByDate(country, date);
-    }
-
-    public List<Statistic> getCountryHistory(String country) throws URISyntaxException, IOException, ParseException {
-        
-        return rapidApiResolver.getCountryHistory(country);
-    }
-
     public List<Statistic> getCountryIntervalHistory(String country, Date initial, Date end) throws URISyntaxException, IOException, ParseException {
 
         return rapidApiResolver.getCountryIntervalHistory(country, initial, end);

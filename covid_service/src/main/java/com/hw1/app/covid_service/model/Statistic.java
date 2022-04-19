@@ -5,6 +5,8 @@ import java.time.LocalDate;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 @Entity
 public class Statistic {
@@ -54,6 +56,10 @@ public class Statistic {
 
     @Column
     private LocalDate time;
+
+    @ManyToOne
+    @JoinColumn(name="request_id", nullable=false)
+    private Request request;
 
     public Statistic(String country, String continent, Integer population, Integer newCases, Integer recovered,
             Integer totalCases, Integer newCritical, Integer active, Double casesPerMillion, Integer totalTests,

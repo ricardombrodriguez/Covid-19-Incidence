@@ -54,51 +54,6 @@ public class RapidApiResolver {
     
     }
 
-    public List<Statistic> getCountryHistoryByDate(String country, Date day) throws URISyntaxException, IOException, ParseException {
-
-        SimpleDateFormat date_formatter = new SimpleDateFormat("yyyy-MM-dd");  
-        String formatted_date = date_formatter.format(day);  
-
-        URIBuilder uriBuilder = new URIBuilder(BASE_URL + "history?country=" + country + "&day=" + formatted_date);
-
-        JSONArray jsonArray = getJsonArray(uriBuilder);
-
-        List<Statistic> countryHistory = new ArrayList<Statistic>();
-        
-        LocalDate currentDate = null;
-
-        List<Statistic> dayStatistics = new ArrayList<Statistic>();
-
-        for (int i = 0; i < jsonArray.size(); i++) {
-
-            JSONObject stat = (JSONObject) jsonArray.get(i);
-
-            Statistic newStatistic = parseStatistic(stat);
-            if (newStatistic.getNewCases() == null) newStatistic.setNewCases(0);
-
-            LocalDate statisticDate = LocalDate.from(newStatistic.getTime());
-
-            // Choose the best statistic for each day (ignoring redundancy and low fidelity stats) - the one with the most new cases
-            if (currentDate == null) {
-                currentDate = statisticDate;
-                dayStatistics.add(newStatistic);
-            } else if (currentDate.equals(statisticDate)) {
-                dayStatistics.add(newStatistic);
-            } else {
-                Statistic choosenStatistic = dayStatistics.stream().max(Comparator.comparing(Statistic::getNewCases)).orElseThrow(NoSuchElementException::new);
-                countryHistory.add(choosenStatistic);
-                currentDate = statisticDate;
-                dayStatistics.clear();
-                dayStatistics.add(newStatistic);
-
-            }
-
-        }
-
-        return countryHistory;
-        
-    }
-
     public List<Statistic> getCountryHistory(String country) throws URISyntaxException, IOException, ParseException {
 
         URIBuilder uriBuilder = new URIBuilder(BASE_URL + "history?country=" + country);
@@ -153,11 +108,7 @@ public class RapidApiResolver {
 
         List<Statistic> countryHistory = getCountryHistory(country);
 
-        for (Statistic stat : countryHistory) {
-            if (stat.getTime().isBefore(initialDate) || stat.getTime().isAfter(endDate)) {
-                countryHistory.remove(stat);
-            }
-        }
+        countryHistory.removeIf((Statistic stat) -> stat.getTime().isBefore(initialDate) || stat.getTime().isAfter(endDate));
 
         return countryHistory;
         

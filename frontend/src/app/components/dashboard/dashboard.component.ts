@@ -47,18 +47,18 @@ export class DashboardComponent implements OnInit {
   }
 
   getCountryHistory(): void {
-    this.statisticService.getCountryHistory(this.country).subscribe((statistics) => {
 
-      this.fetchDays = this.search.get('option')?.value;
+    this.fetchDays = this.search.get('option')?.value;
+    let dateOffset = 24*60*60*1000;
+    let initialDate : Date = new Date();
+    let endDate : Date = new Date();
+    let calculatedDays = (this.fetchDays == 0 ? 365 : this.fetchDays)
+    initialDate.setTime(initialDate.getTime() - dateOffset * calculatedDays);
+
+    this.statisticService.getCountryIntervalHistory(this.country,initialDate,endDate).subscribe((statistics) => {
+
       this.statistics = statistics;
 
-      let dateOffset = 24*60*60*1000;
-      let initialDate : Date = new Date(this.statistics[0].time);
-      let endDate : Date = new Date(this.statistics[0].time);
-      let calculatedDays = (this.fetchDays == 0 ? 365 : this.fetchDays)
-      console.log(calculatedDays)
-      initialDate.setTime(initialDate.getTime() - dateOffset * calculatedDays);
-      console.log(initialDate)
       this.calculateDifferentials(initialDate, endDate);
 
       const xAxisData = [];
