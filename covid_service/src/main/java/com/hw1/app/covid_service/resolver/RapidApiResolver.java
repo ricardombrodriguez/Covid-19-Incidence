@@ -113,6 +113,8 @@ public class RapidApiResolver {
 
         Request req = new Request(new Date(System.currentTimeMillis()), country, fetchDays, initialDate, CacheStatus.MISS);
 
+        logger.info("[RapidApiResolver] Getting {} history from {} to {}", country, initial.toString(), end.toString());
+
         List<Statistic> countryHistory = getCountryHistory(country, req);
 
         countryHistory.removeIf((Statistic stat) -> stat.getTime().isBefore(initialDate) || stat.getTime().isAfter(endDate));
