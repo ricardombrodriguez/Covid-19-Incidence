@@ -5,13 +5,13 @@ import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import com.hw1.app.covid_service.model.CacheStatus;
 import com.hw1.app.covid_service.model.Request;
-import com.hw1.app.covid_service.repository.RequestRepository;
+import com.hw1.app.covid_service.model.Statistic;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,10 +19,9 @@ import org.apache.logging.log4j.Logger;
 @Component
 public class Cache {
 
-    @Autowired
-    private RequestRepository requestRepository;
-
     private static Logger logger = LogManager.getLogger(Cache.class);
+
+    private HashMap<String,Request> cache = new HashMap<String,Request>();
 
     private Integer TTL;        // Time-To-Live (minutes)
 
@@ -38,32 +37,40 @@ public class Cache {
         this.allFetchDays = Arrays.asList(0,7,30,365);
     }
 
-    public Request getRequestStatistics(String country, Date initial, Integer fetchDays) {
+    public Request getRequestStatistics(String country, Date initial, Date end, Integer fetchDays, String key) {
 
-        logger.info("[CACHE] Retrieving request statistics for country {}, starting date {} and for {} fetch days", country, initial, fetchDays);
+        logger.info("[CACHE] Retrieving request statistics for country {}, ending date {} and for {} fetch days", country, end, fetchDays);
         Integer currentIndex = this.allFetchDays.indexOf(fetchDays);
         Request req = null;
 
         LocalDate initialDate = initial.toInstant()
-                                        .atZone(ZoneId.systemDefault())
-                                        .toLocalDate();
+                                .atZone(ZoneId.systemDefault())
+                                .toLocalDate();
+
+
+        LocalDate endDate = end.toInstant()
+                                .atZone(ZoneId.systemDefault())
+                                .toLocalDate();
 
         // Example: If a user searches for last week statistics in 'Portugal' and he previously searched for last month stats, the results he
         // gets from the last week are fetched from the cache, since last month stats include last week ones...
-        for (int i = currentIndex; i < allFetchDays.size(); i++) {
-            logger.info("[CACHE] Verifying if the data exists for {} fetch days", fetchDays);
-            System.out.println("CHECKING FOR " + this.allFetchDays.get(currentIndex));
-            req = requestRepository.findByCountryAndStartDateAndFetchDays(country, initialDate, this.allFetchDays.get(currentIndex)).orElse(null);
-            if (req != null) break;
-        }
+        for (int i = currentIndex; i < this.allFetchDays.size(); i++) {
 
-        System.out.println(req);
+            logger.info("[CACHE] Verifying if the data exists for {} fetch days", this.allFetchDays.get(i));
+            String currentKey = country + endDate.toString() + this.allFetchDays.get(i);
+            req = findByKey(currentKey);
 
-        System.out.println(requestRepository.findAll());
-        for (Request r : requestRepository.findAll()) {
-            System.out.println(r.getFetchDays());
-            System.out.println(r.getCountry());
-            System.out.println("======");
+            if (req != null) {
+                // Retrieved cache from different fetch days that include the one I'm looking for (ex: last week includes last month)
+
+                if (i != currentIndex) {
+                    List<Statistic> requestStatistics = req.getStatistics();
+                    requestStatistics.removeIf((Statistic stat) -> stat.getTime().isBefore(initialDate) || stat.getTime().isAfter(endDate));
+                    req.setStatistics(requestStatistics);
+                    req.setFetchDays(fetchDays);
+                }
+                break;
+            }
         }
 
         if (req != null) {
@@ -71,23 +78,19 @@ public class Cache {
             //Check if the request expired
             if (isExpired(req)) {
 
-                logger.info("[CACHE] Expired request statistics for country {}, starting date {} and for {} fetch days", country, initial, fetchDays);
-                deleteRequestStatistics(req);
-                System.out.println("EXPIRED");
+                logger.info("[CACHE] Expired request statistics for country {}, ending date {} and for {} fetch days", country, end, fetchDays);
+                deleteRequestStatistics(key);
 
             } else {
-
-                System.out.println("success");
-
-                logger.info("[CACHE] Successful retrieving of request statistics for country {}, starting date {} and for {} fetch days", country, initial, fetchDays);
-                req.setCreated_at(new Date(System.currentTimeMillis()));    // Update cache 'created_at'
+                
+                logger.info("[CACHE] Successful retrieving of request statistics for country {}, ending date {} and for {} fetch days", country, end, fetchDays);
                 req.setCacheStatus(CacheStatus.HIT);
 
             }
 
         } else {
             
-            logger.info("[CACHE] Could not find request statistics for country {}, starting date {} and for {} fetch days", country, initial, fetchDays);
+            logger.info("[CACHE] Could not find request statistics for country {}, ending date {} and for {} fetch days", country, end, fetchDays);
 
         }
 
@@ -95,10 +98,17 @@ public class Cache {
         
     }
 
-    public void deleteRequestStatistics(Request req) {
+    private Request findByKey(String key) {
+        if (cache.containsKey(key))
+            return cache.get(key);
+        return null;
+    }
 
-        logger.info("[CACHE] Deleting expired request statistics for country {}, starting date {} and for {} fetch days", req.getCountry(), req.getStartDate(), req.getFetchDays());
-        requestRepository.delete(req);
+    public void deleteRequestStatistics(String key) {
+
+        Request req = cache.get(key);
+        logger.info("[CACHE] Deleting expired request statistics for country {}, ending date {} and for {} fetch days", req.getCountry(), req.getEndDate(), req.getFetchDays());
+        cache.remove(key);
 
     }
 
@@ -110,10 +120,10 @@ public class Cache {
 
     }
 
-    public void storeRequestStatistics(Request req) {
+    public void storeRequestStatistics(String key, Request req) {
 
-        logger.info("[CACHE] Storing request statistics for country {}, starting date {} and for {} fetch days", req.getCountry(), req.getStartDate(), req.getFetchDays());
-        requestRepository.saveAndFlush(req);
+        logger.info("[CACHE] Storing request statistics for country {}, ending date {} and for {} fetch days", req.getCountry(), req.getEndDate(), req.getFetchDays());
+        cache.put(key, req);
 
     }
     

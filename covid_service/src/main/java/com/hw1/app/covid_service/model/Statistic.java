@@ -2,63 +2,23 @@ package com.hw1.app.covid_service.model;
 
 import java.time.LocalDate;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-
-@Entity
 public class Statistic {
 
-    @Id
-    @Column(nullable = false)
     private String country;
-
-    @Column(nullable = false)
     private String continent;
-
-    @Column
     private Integer population;
-
-    @Column
     private Integer newCases;
-
-    @Column
     private Integer recovered;
-
-    @Column
     private Integer totalCases;
-
-    @Column
     private Integer newCritical;
-
-    @Column
     private Integer active;
-
-    @Column
     private Double casesPerMillion;
-
-    @Column
     private Integer totalTests;
-
-    @Column
     private Double testsPerMillion;
-
-    @Column
     private Integer newDeaths;
-
-    @Column
     private Integer totalDeaths;
-
-    @Column
     private Double deathsPerMillion;
-
-    @Column
     private LocalDate time;
-
-    @ManyToOne
-    @JoinColumn(name="request_id", nullable=false)
     private Request request;
 
     public Statistic(String country, String continent, Integer population, Integer newCases, Integer recovered,
@@ -200,6 +160,14 @@ public class Statistic {
 
     public void setTime(LocalDate time) {
         this.time = time;
+    }
+
+    public Request getRequest() {
+        return request;
+    }
+
+    public void setRequest(Request request) {
+        this.request = request;
     }
 
 }

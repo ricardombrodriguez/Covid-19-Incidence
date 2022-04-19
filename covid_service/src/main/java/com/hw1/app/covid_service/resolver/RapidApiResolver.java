@@ -56,7 +56,7 @@ public class RapidApiResolver {
     
     }
 
-    public List<Statistic> getCountryHistory(String country) throws URISyntaxException, IOException, ParseException {
+    public List<Statistic> getCountryHistory(String country, Request req) throws URISyntaxException, IOException, ParseException {
 
         URIBuilder uriBuilder = new URIBuilder(BASE_URL + "history?country=" + country);
 
@@ -111,11 +111,13 @@ public class RapidApiResolver {
         long timeDifference = end.getTime() - initial.getTime();
         int fetchDays = (int) (timeDifference / (1000 * 60 * 60* 24));
 
-        List<Statistic> countryHistory = getCountryHistory(country);
+        Request req = new Request(new Date(System.currentTimeMillis()), country, fetchDays, initialDate, CacheStatus.MISS);
+
+        List<Statistic> countryHistory = getCountryHistory(country, req);
 
         countryHistory.removeIf((Statistic stat) -> stat.getTime().isBefore(initialDate) || stat.getTime().isAfter(endDate));
 
-        Request req = new Request(new Date(System.currentTimeMillis()), country, fetchDays, initialDate, countryHistory, CacheStatus.MISS);
+        req.setStatistics(countryHistory);
 
         return req;
         

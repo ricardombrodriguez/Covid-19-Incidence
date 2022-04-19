@@ -2,6 +2,8 @@ package com.hw1.app.covid_service.service;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 
@@ -33,15 +35,19 @@ public class CovidService {
         long timeDifference = end.getTime() - initial.getTime();
         int fetchDays = (int) (timeDifference / (1000 * 60 * 60* 24));
 
-        Request req = cache.getRequestStatistics(country, initial, fetchDays);
+        LocalDate endDate = end.toInstant()
+                                .atZone(ZoneId.systemDefault())
+                                .toLocalDate();
+
+        String key = country + endDate.toString() + String.valueOf(fetchDays);
+        Request req = cache.getRequestStatistics(country, initial, end, fetchDays, key);
 
         if (req == null) {
 
             try {
 
-                System.out.println("CACHE MISS");
                 req = rapidApiResolver.getCountryIntervalHistory(country, initial, end);
-                cache.storeRequestStatistics(req);
+                cache.storeRequestStatistics(key, req);
 
             } catch (Exception e) {
 
@@ -50,11 +56,8 @@ public class CovidService {
             }
 
         } else {
-
-            System.out.println("CACHE HIT");
-
+            
             req.setCacheStatus(CacheStatus.HIT);
-            cache.storeRequestStatistics(req);
 
         }
 
