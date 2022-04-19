@@ -43,6 +43,8 @@ public class Request {
     @OneToMany(mappedBy="request")
     private List<Statistic> statistics;
 
+    public Request() {}
+
     public Request(Date created_at, String country, Integer fetchDays) {
         this.created_at = created_at;
         this.country = country;

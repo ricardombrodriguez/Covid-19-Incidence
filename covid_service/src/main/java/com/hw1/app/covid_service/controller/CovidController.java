@@ -30,7 +30,7 @@ public class CovidController {
 
     @GetMapping("/interval_history")
     public Request getCountryHistory(@RequestParam String country, @RequestParam @DateTimeFormat(pattern="dd-MM-yyyy") Date initial, @RequestParam @DateTimeFormat(pattern="dd-MM-yyyy") Date end) throws URISyntaxException, IOException, ParseException {
-        return countryService.getCountryIntervalHistory(country, initial, end);
+        return countryService.getCountryIntervalHistory(country.toLowerCase(), initial, end);
     }
 
 }

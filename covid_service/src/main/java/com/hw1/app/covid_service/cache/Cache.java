@@ -52,9 +52,18 @@ public class Cache {
         // gets from the last week are fetched from the cache, since last month stats include last week ones...
         for (int i = currentIndex; i < allFetchDays.size(); i++) {
             logger.info("[CACHE] Verifying if the data exists for {} fetch days", fetchDays);
-            System.out.println("CHECKING FOR " + fetchDays);
+            System.out.println("CHECKING FOR " + this.allFetchDays.get(currentIndex));
             req = requestRepository.findByCountryAndStartDateAndFetchDays(country, initialDate, this.allFetchDays.get(currentIndex)).orElse(null);
             if (req != null) break;
+        }
+
+        System.out.println(req);
+
+        System.out.println(requestRepository.findAll());
+        for (Request r : requestRepository.findAll()) {
+            System.out.println(r.getFetchDays());
+            System.out.println(r.getCountry());
+            System.out.println("======");
         }
 
         if (req != null) {

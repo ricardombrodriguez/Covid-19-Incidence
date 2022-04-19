@@ -39,6 +39,7 @@ public class CovidService {
 
             try {
 
+                System.out.println("CACHE MISS");
                 req = rapidApiResolver.getCountryIntervalHistory(country, initial, end);
                 cache.storeRequestStatistics(req);
 
@@ -50,7 +51,10 @@ public class CovidService {
 
         } else {
 
-            req.setCacheStatus(CacheStatus.MISS);
+            System.out.println("CACHE HIT");
+
+            req.setCacheStatus(CacheStatus.HIT);
+            cache.storeRequestStatistics(req);
 
         }
 
