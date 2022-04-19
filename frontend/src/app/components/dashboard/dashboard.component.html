@@ -192,22 +192,22 @@ label {
 						<div class="w-100">
 							<div class="row">
 								<div class="col-md-3 col-sm-6">
-									<app-statistic [title]="'New cases'" [value]="statistics[0].newCases" [differential]="newCasesDifferential" [description]="'since the last ' + (fetchDays > 0 ? fetchDays : 1) + ' day' + (fetchDays > 0 ? 's' : '')"></app-statistic>
-									<app-statistic [title]="'New critical'" [value]="statistics[0].newCritical" [differential]="newCriticalDifferential" [description]="'since the last ' + (fetchDays > 0 ? fetchDays : 1) + ' day' + (fetchDays > 0 ? 's' : '')"></app-statistic>
+									<app-statistic [title]="'New cases'" [value]="request.statistics[0].newCases" [differential]="newCasesDifferential" [description]="'since the last ' + (fetchDays > 0 ? fetchDays : 1) + ' day' + (fetchDays > 0 ? 's' : '')"></app-statistic>
+									<app-statistic [title]="'New critical'" [value]="request.statistics[0].newCritical" [differential]="newCriticalDifferential" [description]="'since the last ' + (fetchDays > 0 ? fetchDays : 1) + ' day' + (fetchDays > 0 ? 's' : '')"></app-statistic>
 								</div>
 								<div class="col-md-3 col-sm-6">
-									<app-statistic [title]="'Active cases'" [value]="statistics[0].active" [differential]="activeCasesDifferential" [description]="'since the last ' + (fetchDays > 0 ? fetchDays : 1) + ' day' + (fetchDays > 0 ? 's' : '')"></app-statistic>
-									<app-statistic [title]="'Total cases'" [value]="statistics[0].totalCases" [differential]="totalCasesDifferential" [description]="'since the last ' + (fetchDays > 0 ? fetchDays : 1) + ' day' + (fetchDays > 0 ? 's' : '')"></app-statistic>
+									<app-statistic [title]="'Active cases'" [value]="request.statistics[0].active" [differential]="activeCasesDifferential" [description]="'since the last ' + (fetchDays > 0 ? fetchDays : 1) + ' day' + (fetchDays > 0 ? 's' : '')"></app-statistic>
+									<app-statistic [title]="'Total cases'" [value]="request.statistics[0].totalCases" [differential]="totalCasesDifferential" [description]="'since the last ' + (fetchDays > 0 ? fetchDays : 1) + ' day' + (fetchDays > 0 ? 's' : '')"></app-statistic>
 								</div>
 								<div class="col-md-3 col-sm-6">
-									<app-statistic [title]="'Recovered'" [value]="statistics[0].recovered" [differential]="recoveredDifferential" [description]="'since the last ' + (fetchDays > 0 ? fetchDays : 1) + ' day' + (fetchDays > 0 ? 's' : '')"></app-statistic>
-									<app-statistic [title]="'Total tests'" [value]="statistics[0].totalTests" [differential]="totalTestsDifferential" [description]="'since the last ' + (fetchDays > 0 ? fetchDays : 1) + ' day' + (fetchDays > 0 ? 's' : '')"></app-statistic>
+									<app-statistic [title]="'Recovered'" [value]="request.statistics[0].recovered" [differential]="recoveredDifferential" [description]="'since the last ' + (fetchDays > 0 ? fetchDays : 1) + ' day' + (fetchDays > 0 ? 's' : '')"></app-statistic>
+									<app-statistic [title]="'Total tests'" [value]="request.statistics[0].totalTests" [differential]="totalTestsDifferential" [description]="'since the last ' + (fetchDays > 0 ? fetchDays : 1) + ' day' + (fetchDays > 0 ? 's' : '')"></app-statistic>
 								</div>
 								<div class="col-md-3 col-sm-6">
-									<app-statistic [title]="'New deaths'" [value]="statistics[0].newDeaths" [differential]="newDeathsDifferential" [description]="'since the last ' + (fetchDays > 0 ? fetchDays : 1) + ' day' + (fetchDays > 0 ? 's' : '')"></app-statistic>
-									<app-statistic [title]="'Total deaths'" [value]="statistics[0].totalDeaths" [differential]="totalDeathsDifferential" [description]="'since the last ' + (fetchDays > 0 ? fetchDays : 1) + ' day' + (fetchDays > 0 ? 's' : '')"></app-statistic>
+									<app-statistic [title]="'New deaths'" [value]="request.statistics[0].newDeaths" [differential]="newDeathsDifferential" [description]="'since the last ' + (fetchDays > 0 ? fetchDays : 1) + ' day' + (fetchDays > 0 ? 's' : '')"></app-statistic>
+									<app-statistic [title]="'Total deaths'" [value]="request.statistics[0].totalDeaths" [differential]="totalDeathsDifferential" [description]="'since the last ' + (fetchDays > 0 ? fetchDays : 1) + ' day' + (fetchDays > 0 ? 's' : '')"></app-statistic>
 								</div>
-								<h1>{{ statistics[0].time }}</h1>
+								<h1>{{ request.statistics[0].time }}</h1>
 							</div>
 						</div>
 					</div>

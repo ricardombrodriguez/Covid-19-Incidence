@@ -1,10 +1,8 @@
 package com.hw1.app.covid_service.model;
 
-import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -37,6 +35,10 @@ public class Request {
     @Column(nullable = true)
     private LocalDate startDate;
 
+    @Column
+    @Enumerated(EnumType.ORDINAL)
+    private CacheStatus cacheStatus;
+
     @Column(nullable = true)
     @OneToMany(mappedBy="request")
     private List<Statistic> statistics;
@@ -48,12 +50,13 @@ public class Request {
     }
 
     public Request(Date created_at, String country, Integer fetchDays, LocalDate startDate,
-            List<Statistic> statistics) {
+            List<Statistic> statistics, CacheStatus cacheStatus) {
         this.created_at = created_at;
         this.country = country;
         this.fetchDays = fetchDays;
         this.statistics = statistics;
         this.startDate = statistics.get(0).getTime();   //initial date
+        this.cacheStatus = cacheStatus;
     }
 
     public Long getId() {
@@ -102,6 +105,14 @@ public class Request {
 
     public void setCreated_at(Date created_at) {
         this.created_at = created_at;
+    }
+
+    public CacheStatus getCacheStatus() {
+        return cacheStatus;
+    }
+
+    public void setCacheStatus(CacheStatus cacheStatus) {
+        this.cacheStatus = cacheStatus;
     }
 
 }

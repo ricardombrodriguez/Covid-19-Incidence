@@ -5,7 +5,7 @@ import java.net.URISyntaxException;
 import java.util.Date;
 import java.util.List;
 
-import com.hw1.app.covid_service.model.Statistic;
+import com.hw1.app.covid_service.model.Request;
 import com.hw1.app.covid_service.service.CovidService;
 
 import org.json.simple.parser.ParseException;
@@ -29,9 +29,7 @@ public class CovidController {
     }
 
     @GetMapping("/interval_history")
-    public List<Statistic> getCountryHistory(@RequestParam String country, @RequestParam @DateTimeFormat(pattern="dd-MM-yyyy") Date initial, @RequestParam @DateTimeFormat(pattern="dd-MM-yyyy") Date end) throws URISyntaxException, IOException, ParseException {
-        System.out.println(initial);
-        System.out.println(end);
+    public Request getCountryHistory(@RequestParam String country, @RequestParam @DateTimeFormat(pattern="dd-MM-yyyy") Date initial, @RequestParam @DateTimeFormat(pattern="dd-MM-yyyy") Date end) throws URISyntaxException, IOException, ParseException {
         return countryService.getCountryIntervalHistory(country, initial, end);
     }
 

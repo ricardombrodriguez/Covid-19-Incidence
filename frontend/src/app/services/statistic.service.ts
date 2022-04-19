@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Statistic } from '../classes/statistic';
 import { DatePipe } from '@angular/common'
+import { RequestStat } from '../classes/request';
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +17,7 @@ export class StatisticService {
     return this.http.get<string[]>(environment.API_URL + '/countries');
   }
 
-  getCountryIntervalHistory(country : string, initDate : Date, endDate : Date): Observable<Statistic[]> {
+  getCountryIntervalHistory(country : string, initDate : Date, endDate : Date): Observable<RequestStat> {
     let initial : string = this.datepipe.transform(initDate, 'dd-MM-yyyy')!;
     let end : string = this.datepipe.transform(endDate, 'dd-MM-yyyy')!;
     let params = new HttpParams();
@@ -24,7 +25,7 @@ export class StatisticService {
     params = params.append('initial', initial);
     params = params.append('end', end);
     console.log(params)
-    return this.http.get<Statistic[]>(environment.API_URL + '/interval_history', { params: params } );
+    return this.http.get<RequestStat>(environment.API_URL + '/interval_history', { params: params } );
   }
 
 }

@@ -2,7 +2,6 @@ package com.hw1.app.covid_service.resolver;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -13,16 +12,19 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import com.hw1.app.covid_service.connection.HttpClient;
+import com.hw1.app.covid_service.model.CacheStatus;
+import com.hw1.app.covid_service.model.Request;
 import com.hw1.app.covid_service.model.Statistic;
+
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.json.simple.parser.JSONParser;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.json.simple.parser.ParseException;
-import org.json.simple.JSONArray;
 
 @Component
 public class RapidApiResolver {
@@ -96,7 +98,7 @@ public class RapidApiResolver {
         
     }
 
-    public List<Statistic> getCountryIntervalHistory(String country, Date initial, Date end) throws URISyntaxException, IOException, ParseException {
+    public Request getCountryIntervalHistory(String country, Date initial, Date end) throws URISyntaxException, IOException, ParseException {
 
         LocalDate initialDate = initial.toInstant()
                                         .atZone(ZoneId.systemDefault())
@@ -106,11 +108,16 @@ public class RapidApiResolver {
                                 .atZone(ZoneId.systemDefault())
                                 .toLocalDate();
 
+        long timeDifference = end.getTime() - initial.getTime();
+        int fetchDays = (int) (timeDifference / (1000 * 60 * 60* 24));
+
         List<Statistic> countryHistory = getCountryHistory(country);
 
         countryHistory.removeIf((Statistic stat) -> stat.getTime().isBefore(initialDate) || stat.getTime().isAfter(endDate));
 
-        return countryHistory;
+        Request req = new Request(new Date(System.currentTimeMillis()), country, fetchDays, initialDate, countryHistory, CacheStatus.MISS);
+
+        return req;
         
     }
 

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Statistic } from 'src/app/classes/statistic';
+import { RequestStat } from 'src/app/classes/request';
 import { StatisticService } from 'src/app/services/statistic.service';
 
 @Component({
@@ -12,7 +13,7 @@ export class DashboardComponent implements OnInit {
 
   options: any;
   country! : string;
-  statistics! : Statistic[];
+  request! : RequestStat;
   search! : FormGroup;
   newCasesDifferential! : number;
   activeCasesDifferential! : number;
@@ -55,9 +56,11 @@ export class DashboardComponent implements OnInit {
     let calculatedDays = (this.fetchDays == 0 ? 365 : this.fetchDays)
     initialDate.setTime(initialDate.getTime() - dateOffset * calculatedDays);
 
-    this.statisticService.getCountryIntervalHistory(this.country,initialDate,endDate).subscribe((statistics) => {
+    this.statisticService.getCountryIntervalHistory(this.country,initialDate,endDate).subscribe((request) => {
 
-      this.statistics = statistics;
+      this.request = request;
+
+      console.log(this.request)
 
       this.calculateDifferentials(initialDate, endDate);
 
@@ -67,13 +70,13 @@ export class DashboardComponent implements OnInit {
       const newDeaths = [];
 
       // Exclude information with 1+ year
-      for (let i = this.statistics.length - 1; i >= 0; i--) {
+      for (let i = this.request.statistics.length - 1; i >= 0; i--) {
 
-        let stat : Statistic = this.statistics[i];
+        let stat : Statistic = this.request.statistics[i];
         let graphDays = (this.fetchDays > 0) ? this.fetchDays : 365;
 
         // 1 year difference
-        if (Math.abs((new Date(stat.time).getTime() - new Date(statistics[0].time).getTime()) / 1000 / 60 / 60 / 24) > graphDays) {
+        if (Math.abs((new Date(stat.time).getTime() - new Date(request.statistics[0].time).getTime()) / 1000 / 60 / 60 / 24) > graphDays) {
           continue
         }
 
@@ -130,16 +133,16 @@ export class DashboardComponent implements OnInit {
     let initialStat : Statistic = new Statistic();
     let endStat : Statistic = new Statistic();
 
-    for (let i = this.statistics.length - 1; i >= 0; i--) {
-      let statDate : Date = new Date(this.statistics[i].time);
-      if (statDate.valueOf() === initial.valueOf()) {
-        initialStat = this.statistics[i];
+    for (let i = this.request.statistics.length - 1; i >= 0; i--) {
+      let statDate : Date = new Date(this.request.statistics[i].time);
+      if (statDate.toDateString() === initial.toDateString()) {
+        initialStat = this.request.statistics[i];
       }
-      if (statDate.valueOf() === end.valueOf()) { 
-        endStat = this.statistics[i];
+      if (statDate.toDateString() === end.toDateString()) { 
+        endStat = this.request.statistics[i];
       }
     }
-
+    
     this.newCasesDifferential = this.calculateGrowthRate(initialStat.newCases,endStat.newCases);
     this.activeCasesDifferential = this.calculateGrowthRate(initialStat.active,endStat.active);
     this.recoveredDifferential = this.calculateGrowthRate(initialStat.recovered,endStat.recovered);
