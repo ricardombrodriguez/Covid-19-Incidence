@@ -43,11 +43,14 @@ export class DashboardComponent implements OnInit {
 
     this.statisticService.getAllCountries().subscribe((countries) => {
       this.countries = countries;
+      console.log(this.countries)
     });
 
   }
 
   getCountryHistory(): void {
+
+    const el = document.getElementById('stats');
 
     this.fetchDays = this.search.get('option')?.value;
     let dateOffset = 24*60*60*1000;
@@ -124,6 +127,9 @@ export class DashboardComponent implements OnInit {
         animationEasing: 'elasticOut',
         animationDelayUpdate: (idx: number) => idx * 5,
       };
+
+      if (el != null)
+        el.style.visibility = 'visible';
 
     });
   }

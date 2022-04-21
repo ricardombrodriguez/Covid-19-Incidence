@@ -171,6 +171,8 @@ label {
 						</div>
 					</div>
 				</div>
+
+			
 				<div class="row">
 					<form [formGroup]="search">
 						<div class="col-12" id="radios">
@@ -186,47 +188,50 @@ label {
 					</form>
 				</div>
 
+				<div id="stats">
 
-				<div class="row">
-					<div class="col-xl-12 col-xxl-12 d-flex">
-						<div class="w-100">
-							<div class="row">
-								<div class="col-md-3 col-sm-6">
-									<app-statistic [title]="'New cases'" [value]="request.statistics[0].newCases" [differential]="newCasesDifferential" [description]="'since the last ' + (fetchDays > 0 ? fetchDays : 1) + ' day' + (fetchDays > 0 ? 's' : '')"></app-statistic>
-									<app-statistic [title]="'New critical'" [value]="request.statistics[0].newCritical" [differential]="newCriticalDifferential" [description]="'since the last ' + (fetchDays > 0 ? fetchDays : 1) + ' day' + (fetchDays > 0 ? 's' : '')"></app-statistic>
-								</div>
-								<div class="col-md-3 col-sm-6">
-									<app-statistic [title]="'Active cases'" [value]="request.statistics[0].active" [differential]="activeCasesDifferential" [description]="'since the last ' + (fetchDays > 0 ? fetchDays : 1) + ' day' + (fetchDays > 0 ? 's' : '')"></app-statistic>
-									<app-statistic [title]="'Total cases'" [value]="request.statistics[0].totalCases" [differential]="totalCasesDifferential" [description]="'since the last ' + (fetchDays > 0 ? fetchDays : 1) + ' day' + (fetchDays > 0 ? 's' : '')"></app-statistic>
-								</div>
-								<div class="col-md-3 col-sm-6">
-									<app-statistic [title]="'Recovered'" [value]="request.statistics[0].recovered" [differential]="recoveredDifferential" [description]="'since the last ' + (fetchDays > 0 ? fetchDays : 1) + ' day' + (fetchDays > 0 ? 's' : '')"></app-statistic>
-									<app-statistic [title]="'Total tests'" [value]="request.statistics[0].totalTests" [differential]="totalTestsDifferential" [description]="'since the last ' + (fetchDays > 0 ? fetchDays : 1) + ' day' + (fetchDays > 0 ? 's' : '')"></app-statistic>
-								</div>
-								<div class="col-md-3 col-sm-6">
-									<app-statistic [title]="'New deaths'" [value]="request.statistics[0].newDeaths" [differential]="newDeathsDifferential" [description]="'since the last ' + (fetchDays > 0 ? fetchDays : 1) + ' day' + (fetchDays > 0 ? 's' : '')"></app-statistic>
-									<app-statistic [title]="'Total deaths'" [value]="request.statistics[0].totalDeaths" [differential]="totalDeathsDifferential" [description]="'since the last ' + (fetchDays > 0 ? fetchDays : 1) + ' day' + (fetchDays > 0 ? 's' : '')"></app-statistic>
-								</div>
-								<h1>{{ request.statistics[0].time }}</h1>
-							</div>
-						</div>
-					</div>
-				</div>
-
-				<div class="row">
-					<div class="col-xl-12 col-xxl-12">
-						<div class="card flex-fill w-100">
-							<div class="card-header">
-						
-								<h5 class="card-title mb-0">COVID-19 history</h5>
-							</div>
-							<div class="card-body py-3">
-								<div class="chart chart-sm">
-									<div echarts [options]="options" class="demo-chart"></div>
+					<div class="row">
+						<h1 style="text-align: center; margin-bottom: 30px;"><b>{{ request.statistics[0].country }}</b></h1>
+						<div class="col-xl-12 col-xxl-12 d-flex">
+							<div class="w-100">
+								<div class="row">
+									<div class="col-md-3 col-sm-6">
+										<app-statistic [title]="'New cases'" [value]="request.statistics[0].newCases" [differential]="newCasesDifferential" [description]="'since the last ' + (fetchDays > 0 ? fetchDays : 1) + ' day' + (fetchDays > 0 ? 's' : '')"></app-statistic>
+										<app-statistic [title]="'New critical'" [value]="request.statistics[0].newCritical" [differential]="newCriticalDifferential" [description]="'since the last ' + (fetchDays > 0 ? fetchDays : 1) + ' day' + (fetchDays > 0 ? 's' : '')"></app-statistic>
+									</div>
+									<div class="col-md-3 col-sm-6">
+										<app-statistic [title]="'Active cases'" [value]="request.statistics[0].active" [differential]="activeCasesDifferential" [description]="'since the last ' + (fetchDays > 0 ? fetchDays : 1) + ' day' + (fetchDays > 0 ? 's' : '')"></app-statistic>
+										<app-statistic [title]="'Total cases'" [value]="request.statistics[0].totalCases" [differential]="totalCasesDifferential" [description]="'since the last ' + (fetchDays > 0 ? fetchDays : 1) + ' day' + (fetchDays > 0 ? 's' : '')"></app-statistic>
+									</div>
+									<div class="col-md-3 col-sm-6">
+										<app-statistic [title]="'Recovered'" [value]="request.statistics[0].recovered" [differential]="recoveredDifferential" [description]="'since the last ' + (fetchDays > 0 ? fetchDays : 1) + ' day' + (fetchDays > 0 ? 's' : '')"></app-statistic>
+										<app-statistic [title]="'Total tests'" [value]="request.statistics[0].totalTests" [differential]="totalTestsDifferential" [description]="'since the last ' + (fetchDays > 0 ? fetchDays : 1) + ' day' + (fetchDays > 0 ? 's' : '')"></app-statistic>
+									</div>
+									<div class="col-md-3 col-sm-6">
+										<app-statistic [title]="'New deaths'" [value]="request.statistics[0].newDeaths" [differential]="newDeathsDifferential" [description]="'since the last ' + (fetchDays > 0 ? fetchDays : 1) + ' day' + (fetchDays > 0 ? 's' : '')"></app-statistic>
+										<app-statistic [title]="'Total deaths'" [value]="request.statistics[0].totalDeaths" [differential]="totalDeathsDifferential" [description]="'since the last ' + (fetchDays > 0 ? fetchDays : 1) + ' day' + (fetchDays > 0 ? 's' : '')"></app-statistic>
+									</div>
 								</div>
 							</div>
 						</div>
 					</div>
+
+					<div class="row">
+						<div class="col-xl-12 col-xxl-12">
+							<div class="card flex-fill w-100">
+								<div class="card-header">
+							
+									<h5 class="card-title mb-0">COVID-19 history</h5>
+								</div>
+								<div class="card-body py-3">
+									<div class="chart chart-sm">
+										<div echarts [options]="options" class="demo-chart"></div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
 				</div>
 
 			</div>

@@ -14,7 +14,7 @@ export class StatisticService {
   constructor(public datepipe: DatePipe, private http: HttpClient) { }
 
   getAllCountries(): Observable<string[]> {
-    return this.http.get<string[]>(environment.API_URL + '/countries');
+    return this.http.get<string[]>('http://localhost:8080/countries');
   }
 
   getCountryIntervalHistory(country : string, initDate : Date, endDate : Date): Observable<RequestStat> {
@@ -24,8 +24,7 @@ export class StatisticService {
     params = params.append('country', country);
     params = params.append('initial', initial);
     params = params.append('end', end);
-    console.log(params)
-    return this.http.get<RequestStat>(environment.API_URL + '/interval_history', { params: params } );
+    return this.http.get<RequestStat>('http://localhost:8080/interval_history', { params: params } );
   }
 
 }

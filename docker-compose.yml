@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+
+  angular:
+    build: ./frontend
+    container_name: angular-frontend
+    restart: always
+    ports:
+        - 4200:4200
+
+  spring:
+    build: ./covid_service
+    container_name: spring-backend
+    restart: always
+    ports:
+      - 8080:8080
+          
