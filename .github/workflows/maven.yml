@@ -17,7 +17,7 @@ jobs:
         with:
           java-version: '11'
           distribution: 'temurin'
-        cache: maven
+          cache: maven
       - name: Docker compose - build all services
         run: docker-compose build
       - name: Docker compose - run 'Angular' service
