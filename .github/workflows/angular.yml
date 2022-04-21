@@ -13,7 +13,6 @@ jobs:
       matrix:
         node-version: [16.14.0]
     steps:
-      working-directory: ./frontend
       - uses: actions/checkout@v3
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
@@ -21,6 +20,6 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
       - run: npm ci
-        working-directory: ./covid_service
+        working-directory: ./frontend
       - run: npm run build --if-present
-        working-directory: ./covid_service
+        working-directory: ./frontend
