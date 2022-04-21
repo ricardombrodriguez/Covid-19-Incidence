@@ -1,6 +1,3 @@
-# This workflow will build a Java project with Maven, and cache/restore any dependencies to improve the workflow execution time
-# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
-
 name: Java CI with Maven
 
 on:
@@ -10,10 +7,11 @@ on:
     branches: [ master ]
 
 jobs:
+
   build:
-
+    working-directory: ./covid_service
     runs-on: ubuntu-latest
-
+    name: Running 'verify' Maven lifecycle
     steps:
     - uses: actions/checkout@v3
     - name: Set up JDK 11
@@ -22,5 +20,9 @@ jobs:
         java-version: '11'
         distribution: 'temurin'
         cache: maven
-    - name: Build with Maven
-      run: mvn -B package --file pom.xml
+    - name: Docker compose - build all services
+      run: docker-compose build
+    - name: Docker compose - run 'Angular' service
+      run: docker-compose build angular
+    - name: Verify lifecycle and tests
+      run: mvn -B clean verify
