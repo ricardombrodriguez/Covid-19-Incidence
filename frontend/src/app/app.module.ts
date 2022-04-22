@@ -10,6 +10,7 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { NgxEchartsModule } from 'ngx-echarts';
+import { MatTableModule } from '@angular/material/table';
 
 @NgModule({
   declarations: [
@@ -24,6 +25,7 @@ import { NgxEchartsModule } from 'ngx-echarts';
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
+    MatTableModule,
     NgxEchartsModule.forRoot({
       echarts: () => import('echarts')
     })

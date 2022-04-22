@@ -39,14 +39,14 @@ public class CovidService {
                                 .atZone(ZoneId.systemDefault())
                                 .toLocalDate();
 
-        String key = country + endDate.toString() + String.valueOf(fetchDays);
-        Request req = cache.getRequestStatistics(country, initial, end, fetchDays, key);
+        Request req = cache.getRequestStatistics(country, initial, end, fetchDays);
 
         if (req == null) {
 
             try {
 
                 req = rapidApiResolver.getCountryIntervalHistory(country, initial, end);
+                String key = country + endDate.toString() + String.valueOf(fetchDays);
                 cache.storeRequestStatistics(key, req);
 
             } catch (Exception e) {

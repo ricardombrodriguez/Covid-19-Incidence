@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.hw1.app.covid_service.model.Request;
+import com.hw1.app.covid_service.service.CacheService;
 import com.hw1.app.covid_service.service.CovidService;
 
 import org.json.simple.parser.ParseException;
@@ -23,6 +24,9 @@ public class CovidController {
     @Autowired
     private CovidService countryService;
 
+    @Autowired
+    private CacheService cacheService;
+
     @GetMapping("/countries")
     public List<String> getAllCountries() throws URISyntaxException, IOException, ParseException {
         return countryService.getAllCountries();
@@ -31,6 +35,11 @@ public class CovidController {
     @GetMapping("/interval_history")
     public Request getCountryHistory(@RequestParam String country, @RequestParam @DateTimeFormat(pattern="dd-MM-yyyy") Date initial, @RequestParam @DateTimeFormat(pattern="dd-MM-yyyy") Date end) throws URISyntaxException, IOException, ParseException {
         return countryService.getCountryIntervalHistory(country.toLowerCase(), initial, end);
+    }
+
+    @GetMapping("/cache")
+    public List<Request> getCache() throws URISyntaxException, IOException, ParseException {
+        return cacheService.getCache();
     }
 
 }

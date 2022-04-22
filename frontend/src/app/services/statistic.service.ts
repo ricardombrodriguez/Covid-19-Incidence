@@ -13,8 +13,8 @@ export class StatisticService {
 
   constructor(public datepipe: DatePipe, private http: HttpClient) { }
 
-  getAllCountries(): Observable<string[]> {
-    return this.http.get<string[]>('http://localhost:8080/countries');
+  getAllCountries(): Observable<String[]> {
+    return this.http.get<String[]>('http://localhost:8080/countries');
   }
 
   getCountryIntervalHistory(country : string, initDate : Date, endDate : Date): Observable<RequestStat> {

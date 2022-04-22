@@ -4,6 +4,7 @@ import java.time.LocalDate;
 
 public class Statistic {
 
+    private Long id;
     private String country;
     private String continent;
     private Integer population;
@@ -21,10 +22,11 @@ public class Statistic {
     private LocalDate time;
     private Request request;
 
-    public Statistic(String country, String continent, Integer population, Integer newCases, Integer recovered,
+    public Statistic(Long id, String country, String continent, Integer population, Integer newCases, Integer recovered,
             Integer totalCases, Integer newCritical, Integer active, Double casesPerMillion, Integer totalTests,
             Double testsPerMillion, Integer newDeaths, Integer totalDeaths, Double deathsPerMillion,
             LocalDate time) {
+        this.id = id;
         this.country = country;
         this.continent = continent;
         this.population = population;
@@ -40,6 +42,33 @@ public class Statistic {
         this.totalDeaths = totalDeaths;
         this.deathsPerMillion = deathsPerMillion;
         this.time = time;
+    }
+
+    
+
+    public Statistic(String country, String continent, Integer population, Integer newCases, Integer recovered,
+            Integer totalCases, Integer newCritical, Integer active, Double casesPerMillion, Integer totalTests,
+            Double testsPerMillion, Integer newDeaths, Integer totalDeaths, Double deathsPerMillion, LocalDate time) {
+        this.country = country;
+        this.continent = continent;
+        this.population = population;
+        this.newCases = newCases;
+        this.recovered = recovered;
+        this.totalCases = totalCases;
+        this.newCritical = newCritical;
+        this.active = active;
+        this.casesPerMillion = casesPerMillion;
+        this.totalTests = totalTests;
+        this.testsPerMillion = testsPerMillion;
+        this.newDeaths = newDeaths;
+        this.totalDeaths = totalDeaths;
+        this.deathsPerMillion = deathsPerMillion;
+        this.time = time;
+    }
+
+
+
+    public Statistic() {
     }
 
     public String getCountry() {
@@ -169,5 +198,15 @@ public class Statistic {
     public void setRequest(Request request) {
         this.request = request;
     }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    
 
 }

@@ -3,6 +3,8 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { Statistic } from 'src/app/classes/statistic';
 import { RequestStat } from 'src/app/classes/request';
 import { StatisticService } from 'src/app/services/statistic.service';
+import { CacheService } from 'src/app/services/cache.service';
+import { Observable, of } from 'rxjs';
 
 @Component({
   selector: 'app-dashboard',
@@ -25,9 +27,22 @@ export class DashboardComponent implements OnInit {
   totalDeathsDifferential! : number;
   radioValue : number = 0;
   fetchDays! : number;
-  countries : string[] = [];
+  countries$! : Observable<String[]>;
+  cache! : RequestStat[];
 
-  constructor(private statisticService : StatisticService, private fb : FormBuilder) { }
+  constructor(private statisticService : StatisticService, private cacheService : CacheService, private fb : FormBuilder) {
+
+    this.getAllCountries();
+
+  }
+
+  getCache() {
+    this.cacheService.getCache().subscribe((cache) => {
+      this.cache = cache;
+      this.cache.sort((a,b) => b.created_at.getTime() - a.created_at.getTime());
+      console.log(this.cache)
+    });
+  }
 
   ngOnInit(): void {
 
@@ -35,15 +50,13 @@ export class DashboardComponent implements OnInit {
       option:[0]
     });
 
-    this.getAllCountries();
-
   }
 
   getAllCountries() : void {
 
     this.statisticService.getAllCountries().subscribe((countries) => {
-      this.countries = countries;
-      console.log(this.countries)
+      this.countries$ = of(countries);
+      console.log(countries)
     });
 
   }
@@ -62,8 +75,6 @@ export class DashboardComponent implements OnInit {
     this.statisticService.getCountryIntervalHistory(this.country,initialDate,endDate).subscribe((request) => {
 
       this.request = request;
-
-      console.log(this.request)
 
       this.calculateDifferentials(initialDate, endDate);
 
@@ -130,6 +141,8 @@ export class DashboardComponent implements OnInit {
 
       if (el != null)
         el.style.visibility = 'visible';
+
+      this.getCache();
 
     });
   }

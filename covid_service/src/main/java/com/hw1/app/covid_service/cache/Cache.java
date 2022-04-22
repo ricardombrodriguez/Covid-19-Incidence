@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.hw1.app.covid_service.model.CacheStatus;
 import com.hw1.app.covid_service.model.Request;
@@ -37,7 +38,7 @@ public class Cache {
         this.allFetchDays = Arrays.asList(0,7,30,365);
     }
 
-    public Request getRequestStatistics(String country, Date initial, Date end, Integer fetchDays, String key) {
+    public Request getRequestStatistics(String country, Date initial, Date end, Integer fetchDays) {
 
         logger.info("[CACHE] Retrieving request statistics for country {}, ending date {} and for {} fetch days", country, end, fetchDays);
         Integer currentIndex = this.allFetchDays.indexOf(fetchDays);
@@ -57,7 +58,7 @@ public class Cache {
         for (int i = currentIndex; i < this.allFetchDays.size(); i++) {
 
             logger.info("[CACHE] Verifying if the data exists for {} fetch days", this.allFetchDays.get(i));
-            String currentKey = country + endDate.toString() + this.allFetchDays.get(i);
+            String currentKey = generateKey(country, endDate, fetchDays);
             req = findByKey(currentKey);
 
             if (req != null) {
@@ -79,7 +80,9 @@ public class Cache {
             if (isExpired(req)) {
 
                 logger.info("[CACHE] Expired request statistics for country {}, ending date {} and for {} fetch days", country, end, fetchDays);
+                String key = generateKey(country, endDate, fetchDays);
                 deleteRequestStatistics(key);
+                req = null;
 
             } else {
                 
@@ -98,7 +101,7 @@ public class Cache {
         
     }
 
-    private Request findByKey(String key) {
+    public Request findByKey(String key) {
         if (cache.containsKey(key))
             return cache.get(key);
         return null;
@@ -125,6 +128,34 @@ public class Cache {
         logger.info("[CACHE] Storing request statistics for country {}, ending date {} and for {} fetch days", req.getCountry(), req.getEndDate(), req.getFetchDays());
         cache.put(key, req);
 
+    }
+
+    public List<Request> getCache() {
+
+        List<Request> allCache = new ArrayList<>();
+        List<String> toRemove = new ArrayList<>();
+
+        for (Map.Entry<String, Request> entry : this.cache.entrySet()) {
+            if (isExpired(entry.getValue())) {
+                toRemove.add(entry.getKey());
+            } else {
+                allCache.add(entry.getValue());
+            }
+        }
+
+        for (String keyToRemove : toRemove) {
+            deleteRequestStatistics(keyToRemove);
+        }
+
+        return allCache;
+    }
+
+    public void clearCache() {
+        this.cache.clear();
+    }
+
+    public String generateKey(String country, LocalDate endDate, Integer fetchDays) {
+        return country + endDate.toString() + fetchDays;
     }
     
 }

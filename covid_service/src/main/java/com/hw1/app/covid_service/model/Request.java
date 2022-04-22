@@ -35,6 +35,17 @@ public class Request {
         this.cacheStatus = cacheStatus;
     }
 
+    public Request(Long id, Date created_at, String country, Integer fetchDays, LocalDate endDate,
+            CacheStatus cacheStatus, List<Statistic> statistics) {
+        this.id = id;
+        this.created_at = created_at;
+        this.country = country;
+        this.fetchDays = fetchDays;
+        this.endDate = endDate;
+        this.cacheStatus = cacheStatus;
+        this.statistics = statistics;
+    }
+
     public Long getId() {
         return id;
     }

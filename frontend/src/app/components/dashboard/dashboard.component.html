@@ -162,16 +162,17 @@ label {
 					<div class="hero__search" id="inner">
 						<div class="hero__search__form">
 							<form method="GET">
-								<input type="search" [(ngModel)]="country"  list="country_list" placeholder="Search by country (e.g. Portugal, USA)" name="country">
-								<datalist id="country_list" *ngFor="let cty of countries">
-									<option>{{ cty }}</option>
+
+								<input type="search" [(ngModel)]="country" list="country_list" placeholder="Search by country (e.g. Portugal, USA)" name="country">
+								<datalist id="country_list" *ngFor="let cntry of countries$ | async">
+									<option>{{ cntry }}</option>
 								</datalist>
+
 								<button type="submit" class="site-btn" name="searchbtn" (click)="getCountryHistory()">Search</button>
 							</form>
 						</div>
 					</div>
 				</div>
-
 			
 				<div class="row">
 					<form [formGroup]="search">
@@ -230,6 +231,39 @@ label {
 								</div>
 							</div>
 						</div>
+					</div>
+
+					<div class="row" id="cache">
+
+						<mat-table [dataSource]="cache">
+						
+							<ng-container matColumnDef="created_at">
+							  <mat-header-cell *matHeaderCellDef> Time </mat-header-cell>
+							  <mat-cell *matCellDef="let row"> {{row.created_at}} </mat-cell>
+							</ng-container>
+						  
+							<ng-container matColumnDef="country">
+							  <mat-header-cell *matHeaderCellDef> Country </mat-header-cell>
+							  <mat-cell *matCellDef="let row"> {{row.country}} </mat-cell>
+							</ng-container>
+						  
+							<ng-container matColumnDef="fetchDays">
+							  <mat-header-cell *matHeaderCellDef> Fetch Days </mat-header-cell>
+							  <mat-cell *matCellDef="let row"> {{row.fetchDays}} </mat-cell>
+							</ng-container>
+
+							<ng-container matColumnDef="cacheStatus">
+								<mat-header-cell *matHeaderCellDef> Cache Status </mat-header-cell>
+								<mat-cell *matCellDef="let row"> {{row.cacheStatus}} </mat-cell>
+							  </ng-container>
+
+							
+						  
+							<!-- Header and Row Declarations -->
+							<mat-header-row *matHeaderRowDef="['created_at', 'country', 'fetchDays', 'cacheStatus']"></mat-header-row>
+							<mat-row *matRowDef="let row; columns: ['created_at', 'country', 'fetchDays', 'cacheStatus']"></mat-row>
+						  </mat-table>
+
 					</div>
 
 				</div>
