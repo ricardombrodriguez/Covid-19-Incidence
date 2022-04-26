@@ -1,3 +1,8 @@
 #stats {
     visibility: hidden;
+
+}
+
+#cache {
+    background-color: white;
 }

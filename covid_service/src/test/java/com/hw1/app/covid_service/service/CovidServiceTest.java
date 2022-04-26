@@ -1,25 +1,14 @@
 package com.hw1.app.covid_service.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.atLeast;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import com.hw1.app.covid_service.cache.Cache;
-import com.hw1.app.covid_service.model.CacheStatus;
-import com.hw1.app.covid_service.model.Request;
-import com.hw1.app.covid_service.model.Statistic;
 import com.hw1.app.covid_service.resolver.RapidApiResolver;
 
 import org.json.simple.parser.ParseException;
@@ -61,6 +50,7 @@ public class CovidServiceTest {
 
     }
 
+    /*
     @Test
     void testGetCountryIntervalHistory() throws URISyntaxException, IOException, ParseException, java.text.ParseException {
 
@@ -102,7 +92,7 @@ public class CovidServiceTest {
         assertThat(actualRequest).isEqualTo(request);
 
     }
-
+    */
 
     
 }

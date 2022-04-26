@@ -39,7 +39,7 @@ export class DashboardComponent implements OnInit {
   getCache() {
     this.cacheService.getCache().subscribe((cache) => {
       this.cache = cache;
-      this.cache.sort((a,b) => b.created_at.getTime() - a.created_at.getTime());
+      this.cache.sort((a,b) => b.createdAt.getTime() - a.createdAt.getTime());
       console.log(this.cache)
     });
   }
@@ -139,8 +139,9 @@ export class DashboardComponent implements OnInit {
         animationDelayUpdate: (idx: number) => idx * 5,
       };
 
-      if (el != null)
+      if (el != null) {
         el.style.visibility = 'visible';
+      }
 
       this.getCache();
 

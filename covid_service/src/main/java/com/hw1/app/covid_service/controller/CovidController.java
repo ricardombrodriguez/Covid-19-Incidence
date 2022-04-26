@@ -38,7 +38,7 @@ public class CovidController {
     }
 
     @GetMapping("/cache")
-    public List<Request> getCache() throws URISyntaxException, IOException, ParseException {
+    public List<Request> getCache() {
         return cacheService.getCache();
     }
 

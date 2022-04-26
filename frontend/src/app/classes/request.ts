@@ -2,7 +2,7 @@ import { CacheStatus } from "./cacheStatus";
 import { Statistic } from "./statistic";
 
 export class RequestStat {
-    created_at! : Date;
+    createdAt! : Date;
     country! : string;
     fetchDays! : number;
     startDate! : Date;

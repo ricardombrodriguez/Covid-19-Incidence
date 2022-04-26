@@ -67,8 +67,7 @@ public class CovidControllerTest {
     @Test
     void getIntervalHistory() throws Exception {
 
-        SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");  
-        Date initial = format.parse("22-04-2021");
+        SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy"); 
         Date end = format.parse("22-04-2022");
         List<Statistic> statistics = new ArrayList<>();
 
@@ -125,7 +124,7 @@ public class CovidControllerTest {
             .andExpect(jsonPath("$.statistics[0].deathsPerMillion", is(deathsPerMillion)))
             .andExpect(jsonPath("$.statistics[0].time", is(time.toString())))
             .andExpect(jsonPath("$.statistics[0].request").doesNotExist())
-            .andExpect(jsonPath("$.created_at", is(request.getCreated_at().toInstant().atOffset(ZoneOffset.UTC).toString().replace("Z",":00.000+00:00"))));
+            .andExpect(jsonPath("$.createdAt", is(request.getCreatedAt().toInstant().atOffset(ZoneOffset.UTC).toString().replace("Z",":00.000+00:00"))));
 
         verify(covidService, times(1)).getCountryIntervalHistory(Mockito.anyString(),Mockito.any(),Mockito.any());
     }
@@ -149,13 +148,13 @@ public class CovidControllerTest {
             .andExpect(jsonPath("$[0].endDate", is(cache.get(0).getEndDate().toString())))
             .andExpect(jsonPath("$[0].cacheStatus", is(cache.get(0).getCacheStatus().toString())))
             .andExpect(jsonPath("$[0].statistics", is(cache.get(0).getStatistics())))
-            .andExpect(jsonPath("$[0].created_at", is(cache.get(0).getCreated_at().toInstant().atOffset(ZoneOffset.UTC).toString().replace("Z","+00:00"))))
+            .andExpect(jsonPath("$[0].createdAt", is(cache.get(0).getCreatedAt().toInstant().atOffset(ZoneOffset.UTC).toString().replace("Z","+00:00"))))
             .andExpect(jsonPath("$[1].id", is(cache.get(1).getId().intValue())))
             .andExpect(jsonPath("$[1].country", is(cache.get(1).getCountry())))
             .andExpect(jsonPath("$[1].endDate", is(cache.get(1).getEndDate().toString())))
             .andExpect(jsonPath("$[1].cacheStatus", is(cache.get(1).getCacheStatus().toString())))
             .andExpect(jsonPath("$[1].statistics", is(cache.get(1).getStatistics())))
-            .andExpect(jsonPath("$[1].created_at", is(cache.get(1).getCreated_at().toInstant().atOffset(ZoneOffset.UTC).toString().replace("Z","+00:00"))));
+            .andExpect(jsonPath("$[1].createdAt", is(cache.get(1).getCreatedAt().toInstant().atOffset(ZoneOffset.UTC).toString().replace("Z","+00:00"))));
 
         verify(cacheService, times(1)).getCache();
     }

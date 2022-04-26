@@ -34,7 +34,7 @@ public class CacheTest {
         this.id = 1L;
         this.request.setId(id);
         this.created_at = new Date();
-        this.request.setCreated_at(created_at);
+        this.request.setCreatedAt(created_at);
         this.country = "Portugal";
         this.request.setCountry(country);
         this.fetchDays = 7;
@@ -76,7 +76,7 @@ public class CacheTest {
         Request actualRequest = this.cache.getRequestStatistics(this.country, start, end, this.fetchDays);
         assertEquals(this.request, actualRequest);
         assertEquals(this.id, actualRequest.getId());
-        assertEquals(this.created_at, actualRequest.getCreated_at());
+        assertEquals(this.created_at, actualRequest.getCreatedAt());
         assertEquals(this.country, actualRequest.getCountry());
         assertEquals(this.fetchDays, actualRequest.getFetchDays());
         assertEquals(this.endDate, actualRequest.getEndDate());
@@ -101,8 +101,8 @@ public class CacheTest {
     @Test
     void testGetRequestStatisticsExpired() {
         String key = this.cache.generateKey(this.country, this.endDate, this.fetchDays);
-        Date expiredDate = new Date(this.request.getCreated_at().getTime() - 100000 * 1000);
-        this.request.setCreated_at(expiredDate);
+        Date expiredDate = new Date(this.request.getCreatedAt().getTime() - 100000 * 1000);
+        this.request.setCreatedAt(expiredDate);
         this.cache.storeRequestStatistics(key, this.request);
 
         Date start = java.util.Date.from(this.startDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
@@ -148,7 +148,7 @@ public class CacheTest {
     @Test
     void testIsExpiredValid() {
 
-        this.request.setCreated_at(new Date(this.request.getCreated_at().getTime() - 100000 * 1000));
+        this.request.setCreatedAt(new Date(this.request.getCreatedAt().getTime() - 100000 * 1000));
         assertTrue(this.cache.isExpired(this.request));
     }
 

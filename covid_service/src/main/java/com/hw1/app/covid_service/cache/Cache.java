@@ -22,19 +22,19 @@ public class Cache {
 
     private static Logger logger = LogManager.getLogger(Cache.class);
 
-    private HashMap<String,Request> cache = new HashMap<String,Request>();
+    private HashMap<String,Request> map = new HashMap<>();
 
-    private Integer TTL;        // Time-To-Live (minutes)
+    private Integer timeToLive;        // Time-To-Live (minutes)
 
     private List<Integer> allFetchDays = new ArrayList<>();
 
     public Cache() {
-        this.TTL = 60;
+        this.timeToLive = 60;
         this.allFetchDays = Arrays.asList(0,7,30,365);
     }
 
-    public Cache(Integer TTL) {
-        this.TTL = TTL;
+    public Cache(Integer timeToLive) {
+        this.timeToLive = timeToLive;
         this.allFetchDays = Arrays.asList(0,7,30,365);
     }
 
@@ -53,8 +53,6 @@ public class Cache {
                                 .atZone(ZoneId.systemDefault())
                                 .toLocalDate();
 
-        // Example: If a user searches for last week statistics in 'Portugal' and he previously searched for last month stats, the results he
-        // gets from the last week are fetched from the cache, since last month stats include last week ones...
         for (int i = currentIndex; i < this.allFetchDays.size(); i++) {
 
             logger.info("[CACHE] Verifying if the data exists for {} fetch days", this.allFetchDays.get(i));
@@ -62,7 +60,6 @@ public class Cache {
             req = findByKey(currentKey);
 
             if (req != null) {
-                // Retrieved cache from different fetch days that include the one I'm looking for (ex: last week includes last month)
 
                 if (i != currentIndex) {
                     List<Statistic> requestStatistics = req.getStatistics();
@@ -76,7 +73,6 @@ public class Cache {
 
         if (req != null) {
 
-            //Check if the request expired
             if (isExpired(req)) {
 
                 logger.info("[CACHE] Expired request statistics for country {}, ending date {} and for {} fetch days", country, end, fetchDays);
@@ -102,31 +98,30 @@ public class Cache {
     }
 
     public Request findByKey(String key) {
-        if (cache.containsKey(key))
-            return cache.get(key);
+        if (map.containsKey(key))
+            return map.get(key);
         return null;
     }
 
     public void deleteRequestStatistics(String key) {
 
-        Request req = cache.get(key);
+        Request req = map.get(key);
         logger.info("[CACHE] Deleting expired request statistics for country {}, ending date {} and for {} fetch days", req.getCountry(), req.getEndDate(), req.getFetchDays());
-        cache.remove(key);
+        map.remove(key);
 
     }
 
-    // Returns true if the Request persists more than the limitDate (1000ms * time-to-live) in the cache db
     public boolean isExpired(Request req) {
         
-        Date limitDate = new Date(System.currentTimeMillis() - 1000 * this.TTL);
-        return limitDate.after(req.getCreated_at());
+        Date limitDate = new Date(System.currentTimeMillis() - 1000 * this.timeToLive);
+        return limitDate.after(req.getCreatedAt());
 
     }
 
     public void storeRequestStatistics(String key, Request req) {
 
         logger.info("[CACHE] Storing request statistics for country {}, ending date {} and for {} fetch days", req.getCountry(), req.getEndDate(), req.getFetchDays());
-        cache.put(key, req);
+        map.put(key, req);
 
     }
 
@@ -135,7 +130,7 @@ public class Cache {
         List<Request> allCache = new ArrayList<>();
         List<String> toRemove = new ArrayList<>();
 
-        for (Map.Entry<String, Request> entry : this.cache.entrySet()) {
+        for (Map.Entry<String, Request> entry : this.map.entrySet()) {
             if (isExpired(entry.getValue())) {
                 toRemove.add(entry.getKey());
             } else {
@@ -151,7 +146,7 @@ public class Cache {
     }
 
     public void clearCache() {
-        this.cache.clear();
+        this.map.clear();
     }
 
     public String generateKey(String country, LocalDate endDate, Integer fetchDays) {

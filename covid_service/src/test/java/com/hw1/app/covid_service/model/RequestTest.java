@@ -23,7 +23,7 @@ public class RequestTest {
     
         assertEquals(1L, request.getId());
         assertEquals("Portugal", request.getCountry());
-        assertEquals(created_at, request.getCreated_at());
+        assertEquals(created_at, request.getCreatedAt());
         assertEquals(365, request.getFetchDays());
         assertEquals(endDate, request.getEndDate());
         assertEquals(CacheStatus.HIT, request.getCacheStatus());

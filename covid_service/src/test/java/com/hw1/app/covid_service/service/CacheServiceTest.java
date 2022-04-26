@@ -54,14 +54,14 @@ public class CacheServiceTest {
         List<Request> cache = cacheService.getCache();
         assertEquals(2, cache.size());
         assertEquals(1L, cache.get(0).getId());
-        assertEquals(this.created_at, cache.get(0).getCreated_at());
+        assertEquals(this.created_at, cache.get(0).getCreatedAt());
         assertEquals("Portugal", cache.get(0).getCountry());
         assertEquals(LocalDate.of(2022, 4, 22), cache.get(0).getEndDate());
         assertEquals(CacheStatus.HIT, cache.get(0).getCacheStatus());
         assertEquals(365, cache.get(0).getFetchDays());
         assertEquals(new ArrayList<Statistic>(), cache.get(0).getStatistics());
         assertEquals(2L, cache.get(1).getId());
-        assertEquals(this.created_at, cache.get(1).getCreated_at());
+        assertEquals(this.created_at, cache.get(1).getCreatedAt());
         assertEquals("Spain", cache.get(1).getCountry());
         assertEquals(LocalDate.of(2022, 4, 22), cache.get(1).getEndDate());
         assertEquals(CacheStatus.MISS, cache.get(1).getCacheStatus());

@@ -26,8 +26,7 @@ public class HttpClient {
                 HttpEntity entity = response.getEntity();
                 return EntityUtils.toString(entity);
             } finally {
-                if (response != null)
-                    response.close();
+                response.close();
             }
 
         } finally {

@@ -10,7 +10,7 @@ import javax.persistence.OneToMany;
 public class Request {
 
     private Long id;
-    private Date created_at;
+    private Date createdAt;
     private String country;
     private Integer fetchDays;
     private LocalDate endDate;
@@ -21,24 +21,24 @@ public class Request {
 
     public Request() {}
 
-    public Request(Date created_at, String country, Integer fetchDays) {
-        this.created_at = created_at;
+    public Request(Date createdAt, String country, Integer fetchDays) {
+        this.createdAt = createdAt;
         this.country = country;
         this.fetchDays = fetchDays;
     }
 
-    public Request(Date created_at, String country, Integer fetchDays, LocalDate endDate, CacheStatus cacheStatus) {
-        this.created_at = created_at;
+    public Request(Date createdAt, String country, Integer fetchDays, LocalDate endDate, CacheStatus cacheStatus) {
+        this.createdAt = createdAt;
         this.country = country;
         this.fetchDays = fetchDays;
         this.endDate = endDate;   //end date / most recent
         this.cacheStatus = cacheStatus;
     }
 
-    public Request(Long id, Date created_at, String country, Integer fetchDays, LocalDate endDate,
+    public Request(Long id, Date createdAt, String country, Integer fetchDays, LocalDate endDate,
             CacheStatus cacheStatus, List<Statistic> statistics) {
         this.id = id;
-        this.created_at = created_at;
+        this.createdAt = createdAt;
         this.country = country;
         this.fetchDays = fetchDays;
         this.endDate = endDate;
@@ -86,12 +86,12 @@ public class Request {
         this.endDate = endDate;
     }
 
-    public Date getCreated_at() {
-        return created_at;
+    public Date getCreatedAt() {
+        return createdAt;
     }
 
-    public void setCreated_at(Date created_at) {
-        this.created_at = created_at;
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
     }
 
     public CacheStatus getCacheStatus() {
@@ -104,7 +104,7 @@ public class Request {
 
     @Override
     public String toString() {
-        return "Request [cacheStatus=" + cacheStatus + ", country=" + country + ", created_at=" + created_at
+        return "Request [cacheStatus=" + cacheStatus + ", country=" + country + ", createdAt=" + createdAt
                 + ", endDate=" + endDate + ", fetchDays=" + fetchDays + ", id=" + id + ", statistics=" + statistics
                 + "]";
     }

@@ -40,7 +40,7 @@ public class RapidApiResolver {
 
         logger.info("[RapidApiResolver] Retrieving all countries...");
 
-        List<String> allCountries = new ArrayList<String>();
+        List<String> allCountries = new ArrayList<>();
 
         URIBuilder uriBuilder = new URIBuilder(BASE_URL + "countries");
 
@@ -50,25 +50,24 @@ public class RapidApiResolver {
             allCountries.add((String) jsonArray.get(i));
         }
 
-        logger.info("[RapidApiResolver] Returned all {0} countries", jsonArray.size());
+        logger.info("[RapidApiResolver] Returned all countries: {0}", jsonArray);
 
         return allCountries;
     
     }
 
-    public List<Statistic> getCountryHistory(String country, Request req) throws URISyntaxException, IOException, ParseException {
+    public List<Statistic> getCountryHistory(String country) throws URISyntaxException, IOException, ParseException {
 
         URIBuilder uriBuilder = new URIBuilder(BASE_URL + "history?country=" + country);
 
         JSONArray jsonArray = getJsonArray(uriBuilder);
 
-        List<Statistic> countryHistory = new ArrayList<Statistic>();
+        List<Statistic> countryHistory = new ArrayList<>();
 
         LocalDate currentDate = null;
 
-        List<Statistic> dayStatistics = new ArrayList<Statistic>();
+        List<Statistic> dayStatistics = new ArrayList<>();
 
-        // Iterating each day/statistic
         for (int i = 0; i < jsonArray.size(); i++) {
 
             JSONObject stat = (JSONObject) jsonArray.get(i);
@@ -78,7 +77,6 @@ public class RapidApiResolver {
 
             LocalDate statisticDate = LocalDate.from(newStatistic.getTime());
 
-            // Choose the best statistic for each day (ignoring redundancy and low fidelity stats) - the one with the most new cases
             if (currentDate == null) {
                 currentDate = statisticDate;
                 dayStatistics.add(newStatistic);
@@ -113,9 +111,9 @@ public class RapidApiResolver {
 
         Request req = new Request(new Date(System.currentTimeMillis()), country, fetchDays, initialDate, CacheStatus.MISS);
 
-        logger.info("[RapidApiResolver] Getting {} history from {} to {}", country, initial.toString(), end.toString());
+        logger.info("[RapidApiResolver] Getting {} history from {} to {}", country, initial, end);
 
-        List<Statistic> countryHistory = getCountryHistory(country, req);
+        List<Statistic> countryHistory = getCountryHistory(country);
 
         countryHistory.removeIf((Statistic stat) -> stat.getTime().isBefore(initialDate) || stat.getTime().isAfter(endDate));
 
@@ -142,29 +140,29 @@ public class RapidApiResolver {
         Integer population = (stat.get("population") != null) ? ((Long) stat.get("population")).intValue() : null;
 
         JSONObject cases = (JSONObject) stat.get("cases");
-        String cases_str = (cases.get("new") != null) ? (String) cases.get("new") : null;
-        Integer new_cases = (cases_str != null) ? Integer.parseInt(cases_str.replace("+", "")) : null;
+        String casesStr = (cases.get("new") != null) ? (String) cases.get("new") : null;
+        Integer newCases = (casesStr != null) ? Integer.parseInt(casesStr.replace("+", "")) : null;
         Integer recovered = (cases.get("recovered") != null) ? ((Long) cases.get("recovered")).intValue() : null;
-        Integer total_cases = (cases.get("total") != null) ? ((Long) cases.get("total")).intValue() : null;
-        Integer new_critical = (cases.get("critical") != null) ? ((Long) cases.get("critical")).intValue() : null;
+        Integer totalCases = (cases.get("total") != null) ? ((Long) cases.get("total")).intValue() : null;
+        Integer newCritical = (cases.get("critical") != null) ? ((Long) cases.get("critical")).intValue() : null;
         Integer active = (cases.get("active") != null) ? ((Long) cases.get("active")).intValue() : null;
-        Double cases_per_million = (cases.get("1M_pop") != null) ? Double.parseDouble((String) cases.get("1M_pop")) : null;
+        Double casesPerMillion = (cases.get("1M_pop") != null) ? Double.parseDouble((String) cases.get("1M_pop")) : null;
 
         JSONObject tests = (JSONObject) stat.get("tests");
-        Integer total_tests = (tests.get("total") != null) ? ((Long) tests.get("total")).intValue() : null;
-        Double tests_per_million = (tests.get("1M_pop") != null) ? Double.parseDouble((String) tests.get("1M_pop")) : null;
+        Integer totalTests = (tests.get("total") != null) ? ((Long) tests.get("total")).intValue() : null;
+        Double testsPerMillion = (tests.get("1M_pop") != null) ? Double.parseDouble((String) tests.get("1M_pop")) : null;
 
         JSONObject deaths = (JSONObject) stat.get("deaths");
-        String deaths_str = (deaths.get("new") != null) ? (String) deaths.get("new") : null;
-        Integer new_deaths = (deaths_str != null) ? Integer.parseInt(deaths_str.replace("+", "")) : null;
-        Integer total_deaths = (deaths.get("total") != null) ? ((Long) deaths.get("total")).intValue() : null;
-        Double deaths_per_million = (deaths.get("1M_pop") != null) ? Double.parseDouble((String) deaths.get("1M_pop")) : null;
+        String deathsStr = (deaths.get("new") != null) ? (String) deaths.get("new") : null;
+        Integer newDeaths = (deathsStr != null) ? Integer.parseInt(deathsStr.replace("+", "")) : null;
+        Integer totalDeaths = (deaths.get("total") != null) ? ((Long) deaths.get("total")).intValue() : null;
+        Double deathsPerMillion = (deaths.get("1M_pop") != null) ? Double.parseDouble((String) deaths.get("1M_pop")) : null;
 
-        String time_str = ((String) stat.get("time")).replace("+00:00","");
+        String timeStr = ((String) stat.get("time")).replace("+00:00","");
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
-        LocalDate date = LocalDate.parse(time_str, formatter);
+        LocalDate date = LocalDate.parse(timeStr, formatter);
 
-        return new Statistic(cntry, continent, population, new_cases, recovered, total_cases, new_critical, active, cases_per_million, total_tests, tests_per_million, new_deaths, total_deaths, deaths_per_million, date);
+        return new Statistic(cntry, continent, population, newCases, recovered, totalCases, newCritical, active, casesPerMillion, totalTests, testsPerMillion, newDeaths, totalDeaths, deathsPerMillion, date);
 
     }
 
