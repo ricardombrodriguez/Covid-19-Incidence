@@ -41,23 +41,17 @@ public class CovidService {
 
         Request req = cache.getRequestStatistics(country, initial, end, fetchDays);
 
-        System.out.println("uiii");
-
         if (req == null) {
 
             req = rapidApiResolver.getCountryIntervalHistory(country, initial, end);
             String key = country + endDate.toString() + String.valueOf(fetchDays);
             cache.storeRequestStatistics(key, req);
-            System.out.println("chegou");
-
        
         } else {
             
             req.setCacheStatus(CacheStatus.HIT);
 
         }
-
-        System.out.println(req);
 
         return req;
 
