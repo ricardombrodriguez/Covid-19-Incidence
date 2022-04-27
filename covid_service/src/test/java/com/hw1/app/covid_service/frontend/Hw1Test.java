@@ -1,4 +1,4 @@
-package com.hw1.app.covid_service.selenium;
+package com.hw1.app.covid_service.frontend;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -18,15 +18,15 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.FindBy;
 
+import io.cucumber.java.en.And;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
 import io.github.bonigarcia.seljup.SeleniumJupiter;
 
 @ExtendWith(SeleniumJupiter.class)
 public class Hw1Test {
 
   private WebDriver driver;
-  private Map<String, Object> vars;
-  JavascriptExecutor js;
-  private final String URL = "localhost:4200";
 
   @FindBy(name="country")
   private WebElement country;
@@ -52,11 +52,12 @@ public class Hw1Test {
   @FindBy(id="selected_country")
   private WebElement selected_country;
 
+  @FindBy(css="text-muted")
+  private WebElement differential;
+
   @BeforeEach
   public void setUp() {
     driver = new ChromeDriver();
-    js = (JavascriptExecutor) driver;
-    vars = new HashMap<String, Object>();
   }
 
   @AfterEach
@@ -64,54 +65,46 @@ public class Hw1Test {
     driver.quit();
   }
 
-  @Test
-  public void seleniumTest() {
-
-    driver.get("http://localhost:4200/");
+  @When("I want to access {string}")
+  public void accessURL(String URL) {
+    driver.get(URL);
     driver.manage().window().setSize(new Dimension(1846, 1053));
-    assertThat(driver.getTitle()).isEqualTo("Covid-19");
-
-    country.click();
-    country.sendKeys("usa");
-    month.click();
-
-    assertThat(selected_country.getText()).isEqualToIgnoringCase("usa");
-    
-    search.click();
-    driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
-
-    label8.click();
-    search.click();
-
-    driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
-
-    label4.click();
-    search.click();
-
-    driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
-
-    label6.click();
-    search.click();
-
-    driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
-
-    country.sendKeys("france");
-    label4.click();
-    search.click();
-
-    driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
-
-    assertThat(selected_country.getText()).isEqualToIgnoringCase("france");
-
-    label2.click();
-    search.click();
-
-    driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
-
-    label4.click();
-    search.click();
-
-    driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
-
   }
+
+  @Then("page title should be {string}")
+  public void checkPageTitle(String title) {
+    assertThat(driver.getTitle()).isEqualTo(title);
+  }
+
+  @And("I want to search statistics from {string}")
+  public void searchCountry(String strCountry) {
+    country.click();
+    country.sendKeys(strCountry);
+  }
+
+  @And("And I search for the {string}")
+  public void lastDays(String fetchDays) {
+
+    Map<String, WebElement> map  = new HashMap<>();
+    map.put("today", label2); 
+    map.put("last week", label4);
+    map.put("last month", label6);
+    map.put("last year", label8);
+
+    WebElement el = map.get(fetchDays);
+    el.click();
+    search.click();
+    driver.manage().timeouts().implicitlyWait(3, TimeUnit.SECONDS);
+  }
+
+  @Then("country title should be {string}")
+  public void checkCountryTitle(String title) {
+    assertThat(selected_country.getText()).isEqualToIgnoringCase(title);
+  }
+
+  @And("statitic differential text should be last {string}")
+  public void assertStatisticDifferential(String days) {
+    assertThat(differential.getText()).isEqualToIgnoringCase(days);
+  }
+
 }
