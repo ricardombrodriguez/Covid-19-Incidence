@@ -56,7 +56,7 @@ public class Cache {
         for (int i = currentIndex; i < this.allFetchDays.size(); i++) {
 
             logger.info("[CACHE] Verifying if the data exists for {} fetch days", this.allFetchDays.get(i));
-            String currentKey = generateKey(country, endDate, fetchDays);
+            String currentKey = generateKey(country, endDate, this.allFetchDays.get(i));
             req = findByKey(currentKey);
 
             if (req != null) {
