@@ -30,12 +30,12 @@ public class Cache {
 
     public Cache() {
         this.timeToLive = 60;
-        this.allFetchDays = Arrays.asList(0,7,30,365);
+        this.allFetchDays = Arrays.asList(0,7,31,365);
     }
 
     public Cache(Integer timeToLive) {
         this.timeToLive = timeToLive;
-        this.allFetchDays = Arrays.asList(0,7,30,365);
+        this.allFetchDays = Arrays.asList(0,7,31,365);
     }
 
     public Request getRequestStatistics(String country, Date initial, Date end, Integer fetchDays) {

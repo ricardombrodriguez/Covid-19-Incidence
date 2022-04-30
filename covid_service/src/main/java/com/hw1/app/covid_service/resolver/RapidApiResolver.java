@@ -50,7 +50,7 @@ public class RapidApiResolver {
             allCountries.add((String) jsonArray.get(i));
         }
 
-        logger.info("[RapidApiResolver] Returned all countries: {0}", jsonArray);
+        logger.info("[RapidApiResolver] Returned all countries");
 
         return allCountries;
     
