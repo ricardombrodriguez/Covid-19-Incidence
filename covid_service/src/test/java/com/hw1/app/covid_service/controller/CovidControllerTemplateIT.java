@@ -19,7 +19,6 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @AutoConfigureTestDatabase
@@ -43,9 +42,7 @@ class CovidControllerTemplateIT {
     @Test
     void whenValidRequest_thenCreateCacheMiss() {
 
-        ResponseEntity<Request> response = restTemplate
-                .exchange("/interval_history?country=usa&initial=23-01-2021&end=23-01-2022", HttpMethod.GET, null, new ParameterizedTypeReference<Request>() {
-                });
+        restTemplate.exchange("/interval_history?country=usa&initial=23-01-2021&end=23-01-2022", HttpMethod.GET, null, new ParameterizedTypeReference<Request>() {});
 
         List<Request> found = cache.getCache();
         assertThat(found).extracting(Request::getCountry).containsOnly("usa");
@@ -63,9 +60,7 @@ class CovidControllerTemplateIT {
 
         assertThat(cache.getCache().size()).isEqualTo(0);   
 
-        ResponseEntity<Request> response = restTemplate
-                .exchange("/interval_history?country=usa&initial=23-01-2021&end=23-01-2022", HttpMethod.GET, null, new ParameterizedTypeReference<Request>() {
-                });
+        restTemplate.exchange("/interval_history?country=usa&initial=23-01-2021&end=23-01-2022", HttpMethod.GET, null, new ParameterizedTypeReference<Request>() {});
 
         List<Request> found = cache.getCache();
         assertThat(found).extracting(Request::getCountry).containsOnly("usa");
@@ -79,9 +74,7 @@ class CovidControllerTemplateIT {
 
         // 31 days, should hit cache since 31 days are contained in the 365 day request 
 
-        response = restTemplate
-        .exchange("/interval_history?country=usa&initial=23-12-2021&end=23-01-2022", HttpMethod.GET, null, new ParameterizedTypeReference<Request>() {
-        });
+        restTemplate.exchange("/interval_history?country=usa&initial=23-12-2021&end=23-01-2022", HttpMethod.GET, null, new ParameterizedTypeReference<Request>() {});
 
         assertThat(found).extracting(Request::getCountry).containsOnly("usa");
         assertThat(found).extracting(Request::getFetchDays).containsOnly(31);
