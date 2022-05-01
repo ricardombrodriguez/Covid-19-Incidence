@@ -25,7 +25,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class CacheServiceTest {
+class CacheServiceTest {
 
     @Mock
     private Cache cache;
@@ -36,7 +36,7 @@ public class CacheServiceTest {
     private Date created_at;
 
     @BeforeEach
-    public void setUp() throws URISyntaxException, IOException, ParseException {
+    void setUp() throws URISyntaxException, IOException, ParseException {
 
         List<Request> cache = new ArrayList<>();
         this.created_at = new Date();
@@ -49,7 +49,7 @@ public class CacheServiceTest {
     }
 
     @Test
-    public void testCache() throws URISyntaxException, IOException, ParseException {
+    void testCache() throws URISyntaxException, IOException, ParseException {
 
         List<Request> cache = cacheService.getCache();
         assertEquals(2, cache.size());

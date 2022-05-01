@@ -22,7 +22,7 @@ import org.springframework.test.web.servlet.MockMvc;
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureTestDatabase
-public class CovidControllerTestIT {
+class CovidControllerTestIT {
 
     @Autowired
     private MockMvc mvc;

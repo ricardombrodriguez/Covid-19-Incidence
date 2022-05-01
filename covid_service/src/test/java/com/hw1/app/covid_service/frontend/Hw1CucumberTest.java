@@ -13,5 +13,5 @@ import static io.cucumber.junit.platform.engine.Constants.GLUE_PROPERTY_NAME;
 @SelectClasspathResource("com/blazedemo/app/covid_service/frontend")
 @ConfigurationParameter(key = PLUGIN_PROPERTY_NAME, value = "pretty")
 @ConfigurationParameter(key = GLUE_PROPERTY_NAME, value = "com.hw1.app.covid_service.frontend")
-public class Hw1CucumberTest {
+class Hw1CucumberTest {
 }

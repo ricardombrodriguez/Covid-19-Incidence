@@ -12,27 +12,29 @@ import com.hw1.app.covid_service.service.CovidService;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+@CrossOrigin
 @RestController
 public class CovidController {
 
     @Autowired
-    private CovidService countryService;
+    private CovidService covidService;
 
     @Autowired
     private CacheService cacheService;
 
     @GetMapping("/countries")
     public List<String> getAllCountries() throws URISyntaxException, IOException, ParseException {
-        return countryService.getAllCountries();
+        return covidService.getAllCountries();
     }
 
     @GetMapping("/interval_history")
     public Request getCountryHistory(@RequestParam String country, @RequestParam @DateTimeFormat(pattern="dd-MM-yyyy") Date initial, @RequestParam @DateTimeFormat(pattern="dd-MM-yyyy") Date end) throws URISyntaxException, IOException, ParseException {
-        return countryService.getCountryIntervalHistory(country.toLowerCase(), initial, end);
+        return covidService.getCountryIntervalHistory(country.toLowerCase(), initial, end);
     }
 
     @GetMapping("/cache")

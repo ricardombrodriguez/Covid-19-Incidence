@@ -6,7 +6,7 @@ import java.time.LocalDate;
 
 import org.junit.jupiter.api.Test;
 
-public class StatisticsTest {
+class StatisticsTest {
 
     @Test
     void getStatisticObject() {

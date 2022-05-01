@@ -31,7 +31,7 @@ import org.mockito.quality.Strictness;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
-public class RapidApiResolverTest {
+class RapidApiResolverTest {
     
         @Mock
         HttpClient httpClient;
@@ -40,7 +40,7 @@ public class RapidApiResolverTest {
         RapidApiResolver rapidApiResolver;
     
         @Test
-        public void testGetAllCountries() throws IOException, URISyntaxException, ParseException {
+        void testGetAllCountries() throws IOException, URISyntaxException, ParseException {
 
             List<String> expected = new ArrayList<>();
             expected.add("Portugal");
@@ -58,7 +58,7 @@ public class RapidApiResolverTest {
         }
 
         @Test
-        public void testGetIntervalHistory() throws IOException, URISyntaxException, ParseException, java.text.ParseException {
+        void testGetIntervalHistory() throws IOException, URISyntaxException, ParseException, java.text.ParseException {
 
             SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");  
             Date initial = format.parse("22-04-2021");

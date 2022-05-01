@@ -21,7 +21,7 @@ import io.cucumber.java.en.When;
 import io.github.bonigarcia.seljup.SeleniumJupiter;
 
 @ExtendWith(SeleniumJupiter.class)
-public class Hw1Test {
+class Hw1Test {
 
   private WebDriver driver;
 

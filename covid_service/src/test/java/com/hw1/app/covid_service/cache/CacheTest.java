@@ -14,7 +14,7 @@ import com.hw1.app.covid_service.model.Statistic;
 
 import org.junit.jupiter.api.*;
 
-public class CacheTest {
+class CacheTest {
 
     private Cache cache;    //60 sec default TTL
     private Cache cacheTTL;
