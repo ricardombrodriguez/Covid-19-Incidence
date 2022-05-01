@@ -77,19 +77,22 @@ public class RapidApiResolver {
 
             LocalDate statisticDate = LocalDate.from(newStatistic.getTime());
 
-            if (currentDate == null) {
+            if (currentDate == null && jsonArray.size() == 1) {
+                countryHistory.add(newStatistic);
+            } else if (currentDate == null) {
                 currentDate = statisticDate;
                 dayStatistics.add(newStatistic);
             } else if (currentDate.equals(statisticDate)) {
                 dayStatistics.add(newStatistic);
+
             } else {
                 Statistic choosenStatistic = dayStatistics.stream().max(Comparator.comparing(Statistic::getNewCases)).orElseThrow(NoSuchElementException::new);
                 countryHistory.add(choosenStatistic);
                 currentDate = statisticDate;
                 dayStatistics.clear();
                 dayStatistics.add(newStatistic);
-
             }
+            
         }
 
         return countryHistory;

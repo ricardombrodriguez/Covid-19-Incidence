@@ -21,12 +21,6 @@ public class Request {
 
     public Request() {}
 
-    public Request(Date createdAt, String country, Integer fetchDays) {
-        this.createdAt = createdAt;
-        this.country = country;
-        this.fetchDays = fetchDays;
-    }
-
     public Request(Date createdAt, String country, Integer fetchDays, LocalDate endDate, CacheStatus cacheStatus) {
         this.createdAt = createdAt;
         this.country = country;

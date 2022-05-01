@@ -52,13 +52,13 @@ class CovidControllerTemplateIT {
         assertThat(found).extracting(Request::getCreatedAt).isNotNull();
         assertThat(found).extracting(Request::getStatistics).isNotNull();
 
-        assertThat(cache.getCache().size()).isEqualTo(1);   
+        assertThat(cache.getCache()).hasSize(1);   
     }
 
     @Test
     void whenDoubleRequest_thenCreateCacheHitAndOthers()  {
 
-        assertThat(cache.getCache().size()).isEqualTo(0);   
+        assertThat(cache.getCache()).isEmpty();    
 
         restTemplate.exchange("/interval_history?country=usa&initial=23-01-2021&end=23-01-2022", HttpMethod.GET, null, new ParameterizedTypeReference<Request>() {});
 
@@ -70,7 +70,7 @@ class CovidControllerTemplateIT {
         assertThat(found).extracting(Request::getCreatedAt).isNotNull();
         assertThat(found).extracting(Request::getStatistics).isNotNull();
 
-        assertThat(cache.getCache().size()).isEqualTo(1);   
+        assertThat(cache.getCache()).hasSize(1);   
 
         // 31 days, should hit cache since 31 days are contained in the 365 day request 
 
@@ -83,7 +83,7 @@ class CovidControllerTemplateIT {
         assertThat(found).extracting(Request::getCreatedAt).isNotNull();
         assertThat(found).extracting(Request::getStatistics).isNotNull();
 
-        assertThat(cache.getCache().size()).isEqualTo(1);  
+        assertThat(cache.getCache()).hasSize(1);  
 
     }
 

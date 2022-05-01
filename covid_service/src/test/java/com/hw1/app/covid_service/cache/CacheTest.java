@@ -17,6 +17,7 @@ import org.junit.jupiter.api.*;
 public class CacheTest {
 
     private Cache cache;    //60 sec default TTL
+    private Cache cacheTTL;
     private Request request;
     private Long id;
     private Date created_at;
@@ -44,6 +45,7 @@ public class CacheTest {
         this.statistics = new ArrayList<>();
         this.request.setStatistics(statistics);
         this.startDate = endDate.minusDays(this.fetchDays);
+        this.cacheTTL = new Cache(500);
     }
 
     @DisplayName("Add request to cache")
@@ -84,6 +86,27 @@ public class CacheTest {
         assertEquals(this.statistics, actualRequest.getStatistics());
     }
 
+    @DisplayName("Get request statistics in cache for included fetch days")
+    @Test
+    void testGetRequestStatisticsHITForLessDays() {
+
+        this.request.setFetchDays(365);
+        String key = this.cache.generateKey(this.country, this.endDate, this.request.getFetchDays());
+        this.cache.storeRequestStatistics(key, this.request);
+
+        Date start = java.util.Date.from(this.startDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
+        Date end = java.util.Date.from(this.endDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
+        Request actualRequest = this.cache.getRequestStatistics(this.country, start, end, 31);
+        assertEquals(this.request, actualRequest);
+        assertEquals(this.id, actualRequest.getId());
+        assertEquals(this.created_at, actualRequest.getCreatedAt());
+        assertEquals(this.country, actualRequest.getCountry());
+        assertEquals(this.request.getFetchDays(), actualRequest.getFetchDays());
+        assertEquals(this.endDate, actualRequest.getEndDate());
+        assertEquals(CacheStatus.HIT, actualRequest.getCacheStatus());
+        assertEquals(this.statistics, actualRequest.getStatistics());
+    }
+
     @DisplayName("Get request statistics not in cache")
     @Test
     void testGetRequestStatisticsMISS() {
@@ -103,11 +126,11 @@ public class CacheTest {
         String key = this.cache.generateKey(this.country, this.endDate, this.fetchDays);
         Date expiredDate = new Date(this.request.getCreatedAt().getTime() - 100000 * 1000);
         this.request.setCreatedAt(expiredDate);
-        this.cache.storeRequestStatistics(key, this.request);
+        this.cacheTTL.storeRequestStatistics(key, this.request);
 
         Date start = java.util.Date.from(this.startDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
         Date end = java.util.Date.from(this.endDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
-        Request actualRequest = this.cache.getRequestStatistics(this.country, start, end, this.fetchDays);
+        Request actualRequest = this.cacheTTL.getRequestStatistics(this.country, start, end, this.fetchDays);
         assertNull(actualRequest);
     }
 
@@ -142,6 +165,23 @@ public class CacheTest {
 
         assertEquals(1,this.cache.getCache().size());
         assertEquals(expectedCache, this.cache.getCache());
+    }
+
+    @DisplayName("Get cache and delete expired")
+    @Test
+    void testGetCacheDeleteExpired() {
+
+
+        String key = this.cache.generateKey(this.country, this.endDate, this.fetchDays);
+        Date expiredDate = new Date(this.request.getCreatedAt().getTime() - 1000000 * 1000);
+        this.request.setCreatedAt(expiredDate);
+        this.cacheTTL.storeRequestStatistics(key, this.request);
+
+        List<Request> cacheTTL = this.cacheTTL.getCache();
+
+        assertEquals(0,cacheTTL.size());
+        assertNull(this.cacheTTL.findByKey(key));
+
     }
 
     @DisplayName("Test if the date has expired (valid)")
